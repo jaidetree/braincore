@@ -17,6 +17,11 @@
          }
      }
     </script>
+    <style>
+     .dropdown-toggle:checked + .dropdown-view {
+         display: block;
+     }
+    </style>
 </head>
 <body class="bg-white dark:bg-notion-dark">
     <div class="flex flex-row gap-4 justify-center min-h-screen items-center">
@@ -25,8 +30,8 @@
             <input type="hidden" name="repo" />
             <input type="hidden" name="owner" />
             <input type="hidden" name="event_type" value="create-entry" />
-            <button type="submit" class="bg-green-400 text-white rounded-sm px-2 py-1">
-                Create Entry
+            <button type="submit" class="bg-gradient-to-b from-green-300 to-green-400 focus:from-blue-400 focus:to-blue-300 border border-black text-white rounded px-2 py-1 shadow">
+                <span class="drop-shadow">Create Entry</span>
             </button>
         </form>
         <form id="sync-linear" name="sync-linear" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj">
@@ -34,18 +39,28 @@
             <input type="hidden" name="repo" />
             <input type="hidden" name="owner" />
             <input type="hidden" name="event_type" value="sync-linear" />
-            <button type="submit" class="bg-green-400 text-white rounded-sm px-2 py-1">
-                Sync Linear
+            <button type="submit" class="bg-gradient-to-b from-green-300 to-green-400 focus:bg-gradient-to-b focus:from-blue-400 focus:to-blue-300 border border-black text-white rounded px-2 py-1 shadow">
+                <span class="drop-shadow">Sync Linear</span>
             </button>
         </form>
         <form id="slack-share" name="slack-share" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj">
             <input type="hidden" name="api_token" />
             <input type="hidden" name="repo" />
             <input type="hidden" name="owner" />
-            <input type="hidden" name="event_type" value="slack-share" />
-            <button type="submit" class="bg-green-400 text-white rounded-sm px-2 py-1">
-                Share in Slack
-            </button>
+            <div class="bg-gradient-to-b from-green-300 to-green-400 border border-black text-white rounded shadow flex flex-row items-center relative">
+                <button type="submit" class="min-h-full focus:bg-gradient-to-b focus:from-blue-400 focus:to-blue-300 px-2 py-1" name="event-type" value="slack-share">
+                    <span class="drop-shadow">Share in Slack</span>
+                </button>
+                <label for="id-dropdown" class="dropdown px-2 my-1 border-l border-green-800 focus:bg-gradient-to-b focus:from-blue-400 focus:to-blue-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </label>
+                <input type="checkbox" id="id-dropdown" class="hidden dropdown-toggle" />
+                <div class="dropdown dropdown-view hidden absolute bg-green-400 rounded-b shadow right-0 top-full mt-1 px-2 py-1">
+                    <button type="submit" class="text-white drop-shadow px-2 py-1" name="event-type" value="slack-share-today">Only Today</button>
+                </div>
+            </div>
         </form>
     </div>
     <script>
