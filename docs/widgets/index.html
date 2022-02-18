@@ -32,9 +32,13 @@
      const params = new URLSearchParams(window.location.search || '?')
      const token = params.get('api_token')
 
-     Array.from(document.forms).forEach(form => {
-         form.api_token.value = token
-     })
+     Array.from(document.forms)
+            // form.api_token.value = token
+        .flatMap(form => Array.from(form.elements))
+        .filter(input => params.get(input.name))
+        .forEach(input => {
+            input.value = params.get(input.name)
+        })
 
      async function onSubmit (e) {
          // e.preventDefault()
