@@ -20,8 +20,11 @@
 </head>
 <body class="bg-white dark:bg-notion-dark">
     <div class="flex flex-row gap-4 justify-center min-h-screen items-center">
-        <form id="create-entry" name="create-entry">
+        <form id="create-entry" name="create-entry" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj">
             <input type="hidden" name="api_token" />
+            <input type="hidden" name="repo" />
+            <input type="hidden" name="owner" />
+            <input type="hidden" name="event_type" />
             <button type="submit" class="bg-green-400 text-white rounded-sm px-2 py-1">
                 Deploy
             </button>
@@ -39,34 +42,6 @@
         .forEach(input => {
             input.value = params.get(input.name)
         })
-
-     async function onSubmit (e) {
-         // e.preventDefault()
-
-         // const params = new URLSearchParams(window.location.search || '?')
-         // const token = params.get('api_token')
-         //
-         //
-         // const response = await fetch('/repos/eccentric-j/braincore/dispatches', {
-         //     method: 'POST',
-         //     mode: 'cors',
-         //     headers: {
-         //         'Content-Type': 'application/json',
-         //         'Authorization': `Bearer ${token}`
-         //     },
-         //     body: JSON.stringify({
-         //        owner: 'eccentric-j',
-         //        repo: 'braincore',
-         //        event_type: 'create-entry'
-         //     })
-         // })
-         //
-         // const json = await response.json()
-
-         // console.log('response', json)
-     }
-
-     createEntryForm.addEventListener('submit', onSubmit)
     </script>
 </body>
 </html>
