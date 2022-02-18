@@ -32,7 +32,7 @@ jobs:
             .shadow-cljs
             ~/.cache
             ~/.m2/repository
-          key: "${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock')}}-shadow-${{hashFiles('**/*.manifest')}}"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock')}}-shadow-${{hashFiles('**/*.manifest')}}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
