@@ -1,0 +1,20 @@
+{
+	"name": "braincore",
+	"version": "1.0.0",
+	"main": "bin/braincore.js",
+	"author": "Jay Zawrotny <jayzawrotny@gmail.com>",
+	"license": "MIT",
+	"private": true,
+	"scripts": {
+		"start": "npx shadow-cljs watch cli",
+		"run": "node ./bin/braincore.js",
+		"build": "npx shadow-cljs release cli"
+	},
+	"dependencies": {
+		"@linear/sdk": "^1.22.0",
+		"@notionhq/client": "^0.4.13",
+		"@slack/web-api": "^6.6.0",
+		"dotenv": "^16.0.0",
+		"shadow-cljs": "^2.17.2"
+	}
+}

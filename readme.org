@@ -1,0 +1,34 @@
+#+title: Braincore
+
+* What is it?
+
+[[./doc/braincore-screenshot.png]]
+
+Braincore is an immutable daily log currently built against the
+https://notion.so APIs. Every day an automated script creates an entry in a
+Notion doc with the following 3 columns:
+
+ 1. Minor tasks or broad goals
+ 2. Summary of https://linear.app tickets
+ 3. General notes
+
+Then when the next day passes, Github Actions will create a another entry by
+running the create-entry command. The unfinished tasks from the day before
+populate the next day's tasks column, generates a fresh linear ticket summary,
+and creates a blank notes section. This format creates a running log that shows
+when tasks started and completed, additionally it serves as a common inbox for
+stashing links and notes before migrating them into a zettelkasten for permanent
+storage later.
+
+* Usage
+
+1. Clone this repo
+2. Run ~yarn install~
+3. Run ~yarn build~
+4. RUn ~cp .env.example .env~
+5. Edit the ~.env~ file and provide the expected API keys
+6. Run ~node ./bin/braincore.js create-entry~
+
+Note: The script reuses the headings from the previous section, so if you wish
+to change them more to your liking, it should still work as long as the
+structure of elements does not change.

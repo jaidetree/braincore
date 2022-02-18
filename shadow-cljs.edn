@@ -1,0 +1,14 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+
+ :dependencies
+ [[kitchen-async "0.1.0-SNAPSHOT"]]
+
+ :builds
+ {:cli
+  {:target :node-script
+   :main   braincore.cli/main
+   :output-to "bin/braincore.js"}}}
