@@ -24,9 +24,27 @@
             <input type="hidden" name="api_token" />
             <input type="hidden" name="repo" />
             <input type="hidden" name="owner" />
-            <input type="hidden" name="event_type" />
+            <input type="hidden" name="event_type" value="create-entry" />
             <button type="submit" class="bg-green-400 text-white rounded-sm px-2 py-1">
-                Deploy
+                Create Entry
+            </button>
+        </form>
+        <form id="sync-linear" name="sync-linear" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj">
+            <input type="hidden" name="api_token" />
+            <input type="hidden" name="repo" />
+            <input type="hidden" name="owner" />
+            <input type="hidden" name="event_type" value="sync-linear" />
+            <button type="submit" class="bg-green-400 text-white rounded-sm px-2 py-1">
+                Sync Linear
+            </button>
+        </form>
+        <form id="slack-share" name="slack-share" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj">
+            <input type="hidden" name="api_token" />
+            <input type="hidden" name="repo" />
+            <input type="hidden" name="owner" />
+            <input type="hidden" name="event_type" value="slack-share" />
+            <button type="submit" class="bg-green-400 text-white rounded-sm px-2 py-1">
+                Share in Slack
             </button>
         </form>
     </div>
