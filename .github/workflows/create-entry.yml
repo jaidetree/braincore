@@ -24,15 +24,20 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - name: Cache dependencies
+      - name: Cache deps
         uses: actions/cache@v2
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
           path: |
             node_modules
             .shadow-cljs
             ~/.cache
             ~/.m2/repository
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock')}}-shadow-${{hashFiles('**/*.manifest')}}
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-shadow-${{ hashFiles('**/*.manifest') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-
+
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
