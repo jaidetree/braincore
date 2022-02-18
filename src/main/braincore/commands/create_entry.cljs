@@ -304,6 +304,7 @@
 
 (defn create-entry-cmd
   [& args]
-  (reset! entry-atom (load-edn-file "blocks.edn"))
-  (reset! linear-atom (load-edn-file "linear.edn"))
-  (println "Fetching entry " args))
+  #_(reset! entry-atom (load-edn-file "blocks.edn"))
+  #_(reset! linear-atom (load-edn-file "linear.edn"))
+  (println "Creating journal entry in notion")
+  (create-notion-entry))

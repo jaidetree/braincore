@@ -7,8 +7,9 @@
 	"private": true,
 	"scripts": {
 		"start": "npx shadow-cljs watch cli",
-		"run": "node ./bin/braincore.js",
-		"build": "npx shadow-cljs release cli"
+		"build": "npx shadow-cljs release cli",
+		"develop": "npx nodemon ./bin/braincore.js",
+		"braincore": "node ./bin/braincore.js"
 	},
 	"dependencies": {
 		"@linear/sdk": "^1.22.0",

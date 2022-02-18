@@ -1,36 +1,34 @@
 name: Create Journal Entry
 
 on:
-#   push:
-#     branches: [ master ]
-#   pull_request:
-#     branches: [ master ]
+  #   push:
+  #     branches: [ master ]
+  #   pull_request:
+  #     branches: [ master ]
   workflow_dispatch:
   repository_dispatch:
     types: [create-entry]
   schedule:
-     # EST is 5 hours behind UTC so this should trigger at 12 AM EST
-     - cron: "0 5 * * *"
+    # EST is 5 hours behind UTC so this should trigger at 12 AM EST
+    - cron: "0 5 * * *"
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.1
+        with:
+          # Used to specify a package manager for caching in the default directory. Supported values: npm, yarn, pnpm
+          cache: yarn
+          # Used to specify the path to a dependency file: package-lock.json, yarn.lock, etc. Supports wildcards or a list of file names for caching multiple dependencies.
+          cache-dependency-path: yarn.lock
 
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v2.5.1
-      with:
-        # Used to specify a package manager for caching in the default directory. Supported values: npm, yarn, pnpm
-        cache: yarn
-        # Used to specify the path to a dependency file: package-lock.json, yarn.lock, etc. Supports wildcards or a list of file names for caching multiple dependencies.
-        cache-dependency-path: yarn.lock
-        
-    - name: Build
-      run: yarn build
-      
-    - name: Create Journal Entry
-      run: lein test
+      - name: Build
+        run: yarn build
+
+      - name: Create Journal Entry
+        run: yarn braincore create-entry
