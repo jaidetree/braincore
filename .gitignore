@@ -1,2 +1,5 @@
 .shadow-cljs
 .env
+/.calva/
+/bin/
+/yarn-error.log
