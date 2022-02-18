@@ -14,7 +14,8 @@
         cmd-fn (case cmd-kw
                  :create-entry create-entry-cmd
                  :sync-tickets sync-tickets
-                 :share-summary share-summary)]
+                 :share-summary share-summary
+                 :repl          println)]
     (apply cmd-fn args)))
 
 

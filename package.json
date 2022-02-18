@@ -8,7 +8,7 @@
 	"scripts": {
 		"start": "npx shadow-cljs watch cli",
 		"build": "npx shadow-cljs release cli",
-		"develop": "npx nodemon ./bin/braincore.js",
+		"develop": "npx nodemon ./bin/braincore.js repl",
 		"braincore": "node ./bin/braincore.js"
 	},
 	"dependencies": {

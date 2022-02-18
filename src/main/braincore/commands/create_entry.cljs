@@ -279,7 +279,7 @@
   (-> (parse-entry @entry-atom)
       (pprint))
 
-  (p/-> (fetch-linear-summary @entry-atom)
+  (p/-> (fetch-linear-summary)
         (get-in [:create :linear])
         #_(linear-blocks)
         (pprint))
