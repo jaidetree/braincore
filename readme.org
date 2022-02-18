@@ -2,7 +2,7 @@
 
 * What is it?
 
-[[./doc/braincore-screenshot.png]]
+[[./docs/braincore-screenshot.png]]
 
 Braincore is an immutable daily log currently built against the
 https://notion.so APIs. Every day an automated script creates an entry in a
