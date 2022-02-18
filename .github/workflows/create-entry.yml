@@ -17,7 +17,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
       - uses: actions/checkout@v2
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            .shadow-cljs
+            ~/.cache
+            ~/.m2/repository
+          key:
+            "${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock')}}-shadow-${{
+            hashFiles('**/*.manifest') }}"
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
@@ -26,6 +43,9 @@ jobs:
           cache: yarn
           # Used to specify the path to a dependency file: package-lock.json, yarn.lock, etc. Supports wildcards or a list of file names for caching multiple dependencies.
           cache-dependency-path: yarn.lock
+
+      - name: Yarn install
+        run: yarn install --frozen-lockfile
 
       - name: Build
         run: yarn build
