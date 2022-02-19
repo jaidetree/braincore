@@ -515,6 +515,72 @@ Ensure the default browser behavior of the `hidden` attribute.
   }
 }
 
+.dropdown-btn {
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+  background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+  --tw-gradient-from: #22c55e;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(34 197 94 / 0));
+  --tw-gradient-to: #16a34a;
+}
+
+.dropdown-btn:hover {
+  background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+  --tw-gradient-from: #4ade80;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(74 222 128 / 0));
+  --tw-gradient-to: #22c55e;
+}
+
+.dropdown-btn:active {
+  background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+  --tw-gradient-from: #2563eb;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(37 99 235 / 0));
+  --tw-gradient-to: #3b82f6;
+}
+
+.dropdown-btn {
+  display: block;
+  width: 100%;
+  border-radius: 0.25rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  --tw-shadow: 0 1px 1px 0 rgba(255, 255, 255, 0.3) inset;
+  --tw-shadow-colored: inset 0 1px 1px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+@media (min-width: 640px) {
+  .dropdown-btn {
+    width: auto;
+  }
+}
+
+.dropdown-btn {
+  display: flex;
+  width: 2rem;
+  flex-grow: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-right-width: 0px;
+  border-top-width: 0px;
+  border-bottom-width: 0px;
+  border-left-width: 1px;
+  --tw-border-opacity: 1;
+  border-left-color: rgb(20 83 45 / var(--tw-border-opacity));
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
 .dropdown-overlay {
   z-index: 10;
   display: none;
@@ -625,20 +691,8 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: 1.25rem;
 }
 
-.w-8 {
-  width: 2rem;
-}
-
 .flex-auto {
   flex: 1 1 auto;
-}
-
-.flex-none {
-  flex: none;
-}
-
-.flex-grow-0 {
-  flex-grow: 0;
 }
 
 .flex-row {
@@ -661,10 +715,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   justify-content: flex-end;
 }
 
-.justify-center {
-  justify-content: center;
-}
-
 .justify-between {
   justify-content: space-between;
 }
@@ -678,34 +728,8 @@ Ensure the default browser behavior of the `hidden` attribute.
   border-bottom-right-radius: 0px;
 }
 
-.rounded-l-none {
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-}
-
-.border-r-0 {
-  border-right-width: 0px;
-}
-
-.border-t-0 {
-  border-top-width: 0px;
-}
-
-.border-b-0 {
-  border-bottom-width: 0px;
-}
-
-.border-l {
-  border-left-width: 1px;
-}
-
 .border-none {
   border-style: none;
-}
-
-.border-l-green-900 {
-  --tw-border-opacity: 1;
-  border-left-color: rgb(20 83 45 / var(--tw-border-opacity));
 }
 
 .bg-white {
@@ -715,11 +739,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .p-0 {
   padding: 0px;
-}
-
-.px-2 {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
 }
 
 .drop-shadow {
@@ -749,9 +768,5 @@ Ensure the default browser behavior of the `hidden` attribute.
 
   .sm\:flex-row {
     flex-direction: row;
-  }
-
-  .sm\:justify-end {
-    justify-content: flex-end;
   }
 }

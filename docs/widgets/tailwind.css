@@ -26,6 +26,11 @@
 	.btn {
 		@apply text-white rounded px-4 py-1 shadow w-full block sm:w-auto shadow-inner;
 	}
+	.dropdown-btn {
+		@apply btn btn-primary flex-grow-0 rounded-l-none border-r-0 border-t-0
+		border-b-0 border-l border-l-green-900 flex flex-col justify-center w-8 px-0
+		items-center;
+	}
 	.dropdown-overlay {
 		@apply hidden z-10;
 	}
