@@ -3,51 +3,8 @@
 <head>
     <title>Braincore Buttons</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content=
-    "width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-     tailwind.config = {
-         theme: {
-             extend: {
-                 colors: {
-                     'notion-dark': '#2F3437'
-                 }
-             }
-         }
-     }
-    </script>
-    <style type="text/tailwindcss">
-     @layer utilities {
-         @variants responsive {
-             .text-shadow {
-                 text-shadow: 0px 1px 0px black;
-             }
-             .text-shadow-md {
-                 text-shadow: 4px 4px 8px black;
-             }
-             .text-shadow-lg {
-                 text-shadow: 15px 15px 30px black;
-             }
-             .text-shadow-none {
-                 text-shadow: none;
-             }
-         }
-     }
-     @layer components {
-         .btn-primary {
-             @apply bg-gradient-to-b from-green-500 to-green-600
-             hover:bg-gradient-to-b hover:from-green-400 hover:to-green-500
-             border border-black
-         }
-         .btn {
-             @apply text-white rounded px-4 py-1 shadow w-full block sm:w-auto;
-         }
-         .dropdown-toggle:checked + .dropdown-view {
-             @apply block;
-         }
-     }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stylesheet.css" />
 </head>
 <body class="bg-white dark:bg-notion-dark">
     <div class="flex flex-col sm:flex-row gap-4 justify-end min-h-screen items-center">
@@ -69,23 +26,24 @@
                 <span class="text-shadow">Sync Linear</span>
             </button>
         </form>
-        <form id="slack-share" name="slack-share" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto">
+        <form id="slack-share" name="slack-share" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto relative">
             <input type="hidden" name="api_token" />
             <input type="hidden" name="repo" />
             <input type="hidden" name="owner" />
-            <div class="btn btn-primary p-0 flex flex-row items-center justify-between relative w-full sm:w-auto">
-                <button type="submit" class="min-h-full btn flex-auto" name="event-type" value="slack-share">
+            <div class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto">
+                <button type="submit" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event-type" value="slack-share">
                     <span class="text-shadow">Share in Slack</span>
                 </button>
-                <label for="id-dropdown" class="dropdown btn border-l border-l-green-900 px-2">
+                <label for="id-dropdown" class="dropdown btn btn-primary rounded-l-none border-r-0 border-t-0 border-b-0 border-l border-l-green-900 px-2 flex flex-col justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </label>
-                <input type="checkbox" id="id-dropdown" class="hidden dropdown-toggle" />
-                <div class="dropdown dropdown-view btn btn-primary hidden absolute rounded-sm shadow-lg right-0 top-full mt-px px-2 py-1">
-                    <button type="submit" class="text-white text-shadow" name="event-type" value="slack-share-today">Only Today</button>
-                </div>
+            </div>
+            <input type="checkbox" id="id-dropdown" class="hidden dropdown-toggle" />
+            <div class="dropdown dropdown-view ">
+                <button type="submit" class="dropdown-item" name="event-type" value="slack-share-today">Only Today</button>
+                <button type="submit" class="dropdown-item" name="event-type" value="slack-share-yesterday">Only Yesterday</button>
             </div>
         </form>
     </div>
