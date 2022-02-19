@@ -20,24 +20,29 @@
 	.btn-primary {
 		@apply bg-gradient-to-b from-green-500 to-green-600
 			hover:bg-gradient-to-b hover:from-green-400 hover:to-green-500
-			active:bg-gradient-to-b active:from-blue-500 active:to-blue-400
+			active:bg-gradient-to-b active:from-blue-600 active:to-blue-500
 			border border-black;
 	}
 	.btn {
-		@apply text-white rounded px-4 py-1 shadow w-full block sm:w-auto;
+		@apply text-white rounded px-4 py-1 shadow w-full block sm:w-auto shadow-inner;
 	}
-	.dropdown-toggle:checked + .dropdown-view {
-		@apply block;
+	.dropdown-overlay {
+		@apply hidden z-10;
+	}
+	.dropdown-toggle:checked + .dropdown-overlay {
+		@apply fixed top-0 bottom-0 left-0 right-0 block;
 	}
 	.dropdown-view {
 		@apply bg-gray-800 shadow-lg border border-gray-500 divide-y
 			divide-gray-600 hidden absolute rounded-sm shadow-lg left-0 right-0
-			top-full;
+			top-full z-20;
+	}
+	.dropdown-toggle:checked + .dropdown-overlay + .dropdown-view {
+		@apply block;
 	}
 	.dropdown-item {
 		@apply text-white text-shadow w-full text-left px-4 py-2 text-sm
-			hover:bg-gradient-to-b hover:from-green-400 hover:to-green-500
-			active:bg-gradient-to-b active:from-blue-500 active:to-blue-400
-			shadow-inner;
+		hover:bg-gradient-to-b hover:from-green-400 hover:to-green-500
+		active:bg-gradient-to-b active:from-blue-600 active:to-blue-500 shadow-inner;
 	}
 }

@@ -7,15 +7,27 @@
     <link rel="stylesheet" href="stylesheet.css" />
 </head>
 <body class="bg-white dark:bg-notion-dark">
-    <div class="flex flex-col sm:flex-row gap-4 justify-end min-h-screen items-center">
-        <form id="create-entry" name="create-entry" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto">
+    <div class="flex flex-col device-sm:flex-row gap-4 device-sm:justify-end min-h-screen items-center">
+        <form id="create-entry" name="create-entry" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto relative">
             <input type="hidden" name="api_token" />
             <input type="hidden" name="repo" />
             <input type="hidden" name="owner" />
-            <input type="hidden" name="event_type" value="create-entry" />
-            <button type="submit" class="btn btn-primary">
-                <span class="text-shadow">Create Entry</span>
-            </button>
+            <div class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto">
+                <button type="submit" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event-type" value="slack-share">
+                    <span class="text-shadow">Create Entry</span>
+                </button>
+                <label for="id-dropdown-create" class="dropdown btn btn-primary rounded-l-none border-r-0 border-t-0 border-b-0 border-l border-l-green-900 px-2 flex flex-col justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </label>
+            </div>
+            <input type="checkbox" id="id-dropdown-create" class="hidden dropdown-toggle" />
+            <label class="dropdown-overlay" for="id-dropdown-create"></label>
+            <div class="dropdown dropdown-view">
+                <button type="submit" class="dropdown-item" name="event-type" value="create-entry-tomorrow">For tomorrow</button>
+                <button type="button" class="dropdown-item" name="event-type" value="create-entry-date" id="create-date">For date...</button>
+            </div>
         </form>
         <form id="sync-linear" name="sync-linear" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto">
             <input type="hidden" name="api_token" />
@@ -34,13 +46,14 @@
                 <button type="submit" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event-type" value="slack-share">
                     <span class="text-shadow">Share in Slack</span>
                 </button>
-                <label for="id-dropdown" class="dropdown btn btn-primary rounded-l-none border-r-0 border-t-0 border-b-0 border-l border-l-green-900 px-2 flex flex-col justify-center">
+                <label for="id-dropdown-share" class="dropdown btn btn-primary rounded-l-none border-r-0 border-t-0 border-b-0 border-l border-l-green-900 px-2 flex flex-col justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </label>
             </div>
-            <input type="checkbox" id="id-dropdown" class="hidden dropdown-toggle" />
+            <input type="checkbox" id="id-dropdown-share" class="hidden dropdown-toggle" />
+            <label class="dropdown-overlay" for="id-dropdown-share"></label>
             <div class="dropdown dropdown-view ">
                 <button type="submit" class="dropdown-item" name="event-type" value="slack-share-today">Only Today</button>
                 <button type="submit" class="dropdown-item" name="event-type" value="slack-share-yesterday">Only Yesterday</button>

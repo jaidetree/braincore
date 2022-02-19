@@ -487,9 +487,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .btn-primary:active {
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
-  --tw-gradient-from: #3b82f6;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(59 130 246 / 0));
-  --tw-gradient-to: #60a5fa;
+  --tw-gradient-from: #2563eb;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(37 99 235 / 0));
+  --tw-gradient-to: #3b82f6;
 }
 
 .btn {
@@ -504,6 +504,8 @@ Ensure the default browser behavior of the `hidden` attribute.
   color: rgb(255 255 255 / var(--tw-text-opacity));
   --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  --tw-shadow: 0 1px 1px 0 rgba(255, 255, 255, 0.3) inset;
+  --tw-shadow-colored: inset 0 1px 1px 0 var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
@@ -513,7 +515,17 @@ Ensure the default browser behavior of the `hidden` attribute.
   }
 }
 
-.dropdown-toggle:checked + .dropdown-view {
+.dropdown-overlay {
+  z-index: 10;
+  display: none;
+}
+
+.dropdown-toggle:checked + .dropdown-overlay {
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
   display: block;
 }
 
@@ -522,6 +534,7 @@ Ensure the default browser behavior of the `hidden` attribute.
   left: 0px;
   right: 0px;
   top: 100%;
+  z-index: 20;
   display: none;
 }
 
@@ -543,6 +556,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.dropdown-toggle:checked + .dropdown-overlay + .dropdown-view {
+  display: block;
 }
 
 .dropdown-item {
@@ -571,9 +588,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .dropdown-item:active {
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
-  --tw-gradient-from: #3b82f6;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(59 130 246 / 0));
-  --tw-gradient-to: #60a5fa;
+  --tw-gradient-from: #2563eb;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(37 99 235 / 0));
+  --tw-gradient-to: #3b82f6;
 }
 
 .relative {
@@ -720,5 +737,15 @@ Ensure the default browser behavior of the `hidden` attribute.
 
   .sm\:flex-row {
     flex-direction: row;
+  }
+}
+
+@media (min-device-width: 640px) {
+  .device-sm\:flex-row {
+    flex-direction: row;
+  }
+
+  .device-sm\:justify-end {
+    justify-content: flex-end;
   }
 }
