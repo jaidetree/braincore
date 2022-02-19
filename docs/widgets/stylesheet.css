@@ -625,8 +625,20 @@ Ensure the default browser behavior of the `hidden` attribute.
   width: 1.25rem;
 }
 
+.w-8 {
+  width: 2rem;
+}
+
 .flex-auto {
   flex: 1 1 auto;
+}
+
+.flex-none {
+  flex: none;
+}
+
+.flex-grow-0 {
+  flex-grow: 0;
 }
 
 .flex-row {
@@ -643,10 +655,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .items-stretch {
   align-items: stretch;
-}
-
-.justify-end {
-  justify-content: flex-end;
 }
 
 .justify-center {
@@ -738,14 +746,8 @@ Ensure the default browser behavior of the `hidden` attribute.
   .sm\:flex-row {
     flex-direction: row;
   }
-}
 
-@media (min-device-width: 640px) {
-  .device-sm\:flex-row {
-    flex-direction: row;
-  }
-
-  .device-sm\:justify-end {
+  .sm\:justify-end {
     justify-content: flex-end;
   }
 }
