@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="stylesheet.css" />
 </head>
 <body class="bg-white dark:bg-notion-dark">
-    <div class="flex flex-col sm:flex-row gap-4 sm:justify-end min-h-screen items-center">
+    <div class="flex flex-col sm:flex-row gap-4 justify-end min-h-screen items-center">
         <form id="create-entry" name="create-entry" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto relative">
             <input type="hidden" name="api_token" />
             <input type="hidden" name="repo" />
@@ -65,8 +65,8 @@
      const params = new URLSearchParams(window.location.search || '?')
      const token = params.get('api_token')
 
+     // Load the query parameters into form fields that match
      Array.from(document.forms)
-            // form.api_token.value = token
         .flatMap(form => Array.from(form.elements))
         .filter(input => params.get(input.name))
         .forEach(input => {
