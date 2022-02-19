@@ -6,9 +6,9 @@
 	"license": "MIT",
 	"private": true,
 	"scripts": {
-		"start": "npx shadow-cljs watch cli",
-		"build": "npx shadow-cljs release cli",
-		"develop": "npx nodemon ./bin/braincore.js repl",
+		"start": "yarn shadow-cljs watch cli",
+		"build": "yarn shadow-cljs release cli",
+		"develop": "yarn nodemon ./bin/braincore.js repl",
 		"braincore": "node ./bin/braincore.js",
 		"build:css": "yarn tailwindcss -i ./docs/widgets/tailwind.css -o ./docs/widgets/stylesheet.css",
 		"start:css": "yarn build:css --watch"
