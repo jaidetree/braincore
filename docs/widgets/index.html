@@ -41,7 +41,7 @@
              border border-black
          }
          .btn {
-             @apply btn-colors text-white rounded px-4 py-1 shadow w-full block sm:w-auto;
+             @apply text-white rounded px-4 py-1 shadow w-full block sm:w-auto;
          }
          .dropdown-toggle:checked + .dropdown-view {
              @apply block;
@@ -56,7 +56,7 @@
             <input type="hidden" name="repo" />
             <input type="hidden" name="owner" />
             <input type="hidden" name="event_type" value="create-entry" />
-            <button type="submit" class="btn">
+            <button type="submit" class="btn btn-primary">
                 <span class="text-shadow">Create Entry</span>
             </button>
         </form>
@@ -65,7 +65,7 @@
             <input type="hidden" name="repo" />
             <input type="hidden" name="owner" />
             <input type="hidden" name="event_type" value="sync-linear" />
-            <button type="submit" class="btn">
+            <button type="submit" class="btn btn-primary">
                 <span class="text-shadow">Sync Linear</span>
             </button>
         </form>
@@ -73,8 +73,8 @@
             <input type="hidden" name="api_token" />
             <input type="hidden" name="repo" />
             <input type="hidden" name="owner" />
-            <div class="btn p-0 flex flex-row items-center justify-between relative w-full sm:w-auto">
-                <button type="submit" class="min-h-full focus:bg-gradient-to-b focus:from-blue-400 focus:to-blue-300 px-2 py-1" name="event-type" value="slack-share">
+            <div class="btn-primary p-0 flex flex-row items-center justify-between relative w-full sm:w-auto">
+                <button type="submit" class="min-h-full btn" name="event-type" value="slack-share">
                     <span class="text-shadow">Share in Slack</span>
                 </button>
                 <label for="id-dropdown" class="dropdown btn">
@@ -83,7 +83,7 @@
                     </svg>
                 </label>
                 <input type="checkbox" id="id-dropdown" class="hidden dropdown-toggle" />
-                <div class="dropdown dropdown-view btn hidden absolute rounded-sm shadow-lg right-0 top-full mt-px px-2 py-1">
+                <div class="dropdown dropdown-view btn btn-primary hidden absolute rounded-sm shadow-lg right-0 top-full mt-px px-2 py-1">
                     <button type="submit" class="text-white text-shadow" name="event-type" value="slack-share-today">Only Today</button>
                 </div>
             </div>
