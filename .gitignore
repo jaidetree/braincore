@@ -3,3 +3,8 @@
 /.calva/
 /bin/
 /yarn-error.log
+/linear.edn
+/debug.*
+/debug-out.edn
+/blocks.edn
+/.log/

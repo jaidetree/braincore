@@ -131,7 +131,7 @@
   Takes a map containing the page, entry, and columns blocks
   Returns an obj
   "
-  [{:keys [page entry columns] :as data}]
+  [{:keys [page entry columns]}]
   (let [[tasks _linear _notes] (:children columns)
         headers (collect-headers columns)
         incomplete-tasks (collect-incomplete-tasks (:children tasks))
@@ -212,7 +212,7 @@
                        (linear-blocks linear)))
        (b/column [notes-title
                   (b/divider)
-                  (b/bullet [(b/text "")])])])]))
+                  (b/bullet [(b/text "How was your day...")])])])]))
 
 (defn build-notion-entry
   [{:keys [_notion _linear] :as data}]
@@ -221,20 +221,19 @@
 
 (defn append-entry-to-page
   [{:keys [section-blocks columns-blocks]} page-id]
-  (p/try
-    (p/let [section (on-error notion/append-blocks
-                              {:block-id page-id
-                               :children section-blocks}
-                              "Could not create new entry section" page-id)
-            section-id (-> section (first) (:id))
-            columns (on-error notion/append-blocks
-                              {:block-id section-id
-                               :children columns-blocks}
-                              "Could not create columns in section" section-id section)]
+  (p/let [section (on-error notion/append-blocks
+                            {:block-id page-id
+                             :children section-blocks}
+                            "Could not create new entry section" page-id)
+          section-id (-> section (first) (:id))
+          columns (on-error notion/append-blocks
+                            {:block-id section-id
+                             :children columns-blocks}
+                            "Could not create columns in section" section-id section)]
 
-      (pprint "Created sections and columns"))
-    (p/catch js/Error error
-      (js/console.error error))))
+    (println "Created sections and columns")
+    (pprint {:section-id section-id
+             :columns-id (-> columns (first) (:id))})))
 
 (defn create-notion-entry
   []
@@ -290,21 +289,25 @@
         :linear @linear-atom})
       (save-edn-file "debug.edn"))
 
+  (do
+    (reset! entry-atom (load-edn-file "blocks.edn"))
+    (reset! linear-atom (load-edn-file "linear.edn"))
+    nil)
 
   (p/-> (build-notion-entry
          {:notion (-> @entry-atom (parse-entry))
           :linear @linear-atom})
         (save-edn-file "debug.edn")
         (append-entry-to-page page-id)
-        (save-edn-file "debug-out.edn"))
+        (save-edn-file "debug-out.edn")
+        (p/catch (fn [error]
+                   (js/console.error error))))
 
   (let [body (load-edn-file "debug.edn")]
-    (get-in body [:columns-blocks 0 :column_list :children 1 :column :children 3]))
+    (get-in body [:columns-blocks 0 :column_list :children 2 :column :children 2 :bulleted_list_item]))
 )
 
 (defn create-entry-cmd
-  [& args]
-  #_(reset! entry-atom (load-edn-file "blocks.edn"))
-  #_(reset! linear-atom (load-edn-file "linear.edn"))
+  [& _args]
   (println "Creating journal entry in notion")
   (create-notion-entry))

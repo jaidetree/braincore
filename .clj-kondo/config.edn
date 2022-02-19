@@ -1,4 +1,4 @@
-{:lint-as {kitchen-async.promise/-> clj-kondo.lint-as/->
-           kitchen-async.promise/let clj-kondo.lint-as/let
-           kitchen-async.promise/try clj-kondo.lint-as/try
-           kitchen-async.promise/catch clj-kondo.lint-as/catch}}
+{:lint-as {kitchen-async.promise/-> clojure.core/->
+           kitchen-async.promise/let clojure.core/let
+           kitchen-async.promise/try clojure.core/try
+           kitchen-async.promise/catch clojure.core/catch}}
