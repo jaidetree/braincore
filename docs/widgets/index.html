@@ -5,73 +5,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="stylesheet.css" />
+    <script src="https://unpkg.com/alpinejs"></script>
 </head>
 <body class="bg-white dark:bg-notion-dark">
     <div class="flex flex-col sm:flex-row gap-4 justify-end min-h-screen items-center">
-        <form id="create-entry" name="create-entry" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto relative">
-            <input type="hidden" name="api_token" />
-            <input type="hidden" name="repo" />
-            <input type="hidden" name="owner" />
-            <div class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto">
-                <button type="submit" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event-type" value="slack-share">
-                    <span class="text-shadow">Create Entry</span>
-                </button>
-                <label for="id-dropdown-create" class="dropdown-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </label>
+        <section x-data="{ open: false }" class="relative">
+            <form id="create-entry" name="create-entry" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto relative">
+                <div class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto">
+                    <button type="submit" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event_type" value="create-entry">
+                        <span class="text-shadow">Create Entry</span>
+                    </button>
+                    <button type="button" @click="open = !open" class="dropdown-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                </div>
+            </form>
+            <div x-show="open" x-cloak>
+                <div class="dropdown-overlay" @click="open = false" for="id-dropdown-create"></div>
+                <div class="dropdown dropdown-view">
+                    <button type="submit" class="dropdown-item" name="event_type" value="create-entry-tomorrow">For tomorrow</button>
+                    <button type="button" class="dropdown-item" name="event_type" value="create-entry-date" id="create-date">For date...</button>
+                </div>
             </div>
-            <input type="checkbox" id="id-dropdown-create" class="hidden dropdown-toggle" />
-            <label class="dropdown-overlay" for="id-dropdown-create"></label>
-            <div class="dropdown dropdown-view">
-                <button type="submit" class="dropdown-item" name="event-type" value="create-entry-tomorrow">For tomorrow</button>
-                <button type="button" class="dropdown-item" name="event-type" value="create-entry-date" id="create-date">For date...</button>
-            </div>
-        </form>
+        </section>
+
         <form id="sync-linear" name="sync-linear" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto">
-            <input type="hidden" name="api_token" />
-            <input type="hidden" name="repo" />
-            <input type="hidden" name="owner" />
-            <input type="hidden" name="event_type" value="sync-linear" />
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary" name="event_type" value="sync-linear">
                 <span class="text-shadow">Sync Linear</span>
             </button>
         </form>
-        <form id="slack-share" name="slack-share" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto relative">
-            <input type="hidden" name="api_token" />
-            <input type="hidden" name="repo" />
-            <input type="hidden" name="owner" />
-            <div class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto">
-                <button type="submit" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event-type" value="slack-share">
-                    <span class="text-shadow">Share in Slack</span>
-                </button>
-                <label for="id-dropdown-share" class="dropdown-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </label>
+        <section x-data="{ open: false }" class="relative">
+            <form id="slack-share" name="slack-share" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto">
+                <div class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto">
+                    <button type="submit" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event_type" value="slack-share">
+                        <span class="text-shadow">Share in Slack</span>
+                    </button>
+                    <button type="button" @click="open = !open" class="dropdown-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                </div>
+            </form>
+            <div x-show="open" x-cloak>
+                <div class="dropdown-overlay" @click="open = false"></div>
+                <div class="dropdown dropdown-view">
+                    <button type="submit" class="dropdown-item" name="event_type" value="slack-share-today">Only Today</button>
+                    <button type="submit" class="dropdown-item" name="event_type" value="slack-share-yesterday">Only Yesterday</button>
+                </div>
             </div>
-            <input type="checkbox" id="id-dropdown-share" class="hidden dropdown-toggle" />
-            <label class="dropdown-overlay" for="id-dropdown-share"></label>
-            <div class="dropdown dropdown-view ">
-                <button type="submit" class="dropdown-item" name="event-type" value="slack-share-today">Only Today</button>
-                <button type="submit" class="dropdown-item" name="event-type" value="slack-share-yesterday">Only Yesterday</button>
-            </div>
-        </form>
+        </section>
     </div>
-    <script>
-     const createEntryForm = document.getElementById('create-entry')
+    <script type="module">
+     import { Octokit } from "https://cdn.skypack.dev/@octokit/core";
+
      const params = new URLSearchParams(window.location.search || '?')
      const token = params.get('api_token')
+     const owner = params.get('owner')
+     const repo = params.get('repo')
 
-     // Load the query parameters into form fields that match
-     Array.from(document.forms)
-        .flatMap(form => Array.from(form.elements))
-        .filter(input => params.get(input.name))
-        .forEach(input => {
-            input.value = params.get(input.name)
+     const octokit = new Octokit({
+         auth: token,
+     })
+
+     Array.from(document.forms).forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault()
+            console.log(e)
+            const formData = new FormData(e.currentTarget)
+            const btn = e.submitter
+            formData.append(e.submitter.name, e.submitter.value)
+            const clientPayload = Array
+                .from(formData.entries())
+                .reduce((obj, [ key, value ]) => {
+                    obj[key] = value
+                    return obj
+                }, {})
+
+            const payload = {
+                event_type: btn.value,
+                client_payload: clientPayload
+            }
+
+            const res = await octokit
+                .request(`POST /repos/${owner}/${repo}/dispatches`, payload)
         })
+     })
+
+
     </script>
 </body>
 </html>

@@ -31,19 +31,13 @@
 		border-b-0 border-l border-l-green-900 flex flex-col justify-center w-8 px-0
 		items-center;
 	}
-	.dropdown-overlay {
-		@apply hidden z-10;
-	}
-	.dropdown-toggle:checked + .dropdown-overlay {
-		@apply fixed top-0 bottom-0 left-0 right-0 block;
-	}
 	.dropdown-view {
 		@apply bg-gray-800 shadow-lg border border-gray-500 divide-y
-			divide-gray-600 hidden absolute rounded-sm shadow-lg left-0 right-0
+			divide-gray-600 absolute rounded-sm shadow-lg left-0 right-0
 			top-full z-20;
 	}
-	.dropdown-toggle:checked + .dropdown-overlay + .dropdown-view {
-		@apply block;
+	.dropdown-overlay {
+		@apply fixed left-0 right-0 top-0 bottom-0;
 	}
 	.dropdown-item {
 		@apply text-white text-shadow w-full text-left px-4 py-2 text-sm
