@@ -20,24 +20,11 @@
 ;; });
 ;;
 
-(defn get-key-file
+#_(defn get-key-file
   []
   (-> (.readFileSync fs "googleauth.private.json" #js {:encoding "utf-8"})
       #_(js/JSON.parse)))
 
-(println "")
-(-> (get-key-file)
-    (println "GOOGLE_CAL_KEY_FILE\n"))
-
-(comment
-  (get-key-file))
-
-#_(def auth-key (-> (env/get :GOOGLE_CAL_KEY)
-                  (s/replace #"\\" "")
-                  (s/replace #"\n", "\\n")
-                  #_(js/JSON.parse)))
-
-#_(js/console.log auth-key)
 
 (def auth (new (.. google -auth -GoogleAuth)
                #js {:keyFile "googleauth.private.json"
