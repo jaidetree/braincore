@@ -9,3 +9,4 @@
 /blocks.edn
 /.log/
 .nrepl-port
+.cpcache

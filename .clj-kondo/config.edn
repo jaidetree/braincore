@@ -1,4 +1,8 @@
-{:lint-as {kitchen-async.promise/-> clojure.core/->
-           kitchen-async.promise/let clojure.core/let
-           kitchen-async.promise/try clojure.core/try
-           kitchen-async.promise/catch clojure.core/catch}}
+{:config-paths ["promesa/config.edn"]
+ :lint-as {promesa.core/->   clojure.core/->
+           promesa.core/->>  clojure.core/->>
+           promesa.core/as-> clojure.core/as->
+           promesa.core/let  clojure.core/let
+           promesa.core/plet clojure.core/let
+           promesa.core/loop clojure.core/loop}
+}
