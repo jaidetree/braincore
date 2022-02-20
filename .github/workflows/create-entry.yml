@@ -50,8 +50,11 @@ jobs:
       - name: Yarn install
         run: yarn install --frozen-lockfile
 
-      - name: Build
-        run: yarn build
+      - name: "Generate Cal Key File"
+        run: 'echo "$GOOGLE_CAL_KEY" > googleauth.private.json'
+        shell: bash
+        env:
+          GOOGLE_CAL_KEY: ${{ secrets.GOOGLE_CAL_KEY }}
 
       - name: Create Journal Entry
         run: yarn braincore create-entry
