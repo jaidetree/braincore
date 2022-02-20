@@ -17,6 +17,14 @@
 	}
 }
 @layer components {
+	.notion {
+		@apply bg-notion-light dark:bg-notion-dark;
+	}
+
+	.notion-subtle {
+		@apply bg-notion-subtle-light dark:bg-notion-subtle-dark;
+	}
+
 	.btn-primary {
 		@apply bg-gradient-to-b from-green-500 to-green-600
 			hover:bg-gradient-to-b hover:from-green-400 hover:to-green-500
@@ -32,16 +40,15 @@
 		items-center;
 	}
 	.dropdown-view {
-		@apply bg-gray-800 shadow-lg border border-gray-500 divide-y
-			divide-gray-600 absolute rounded-sm shadow-lg left-0 right-0
+		@apply notion-subtle shadow-lg border border-gray-800 divide-y
+			divide-gray-600 absolute rounded-lg shadow-lg left-0 right-0
 			top-full z-20;
 	}
 	.dropdown-overlay {
 		@apply fixed left-0 right-0 top-0 bottom-0;
 	}
 	.dropdown-item {
-		@apply text-white text-shadow w-full text-left px-4 py-2 text-sm
-		hover:bg-gradient-to-b hover:from-green-400 hover:to-green-500
-		active:bg-gradient-to-b active:from-blue-600 active:to-blue-500 shadow-inner;
+		@apply text-black dark:text-white w-full text-left px-4 py-2 text-sm
+		  hover:text-blue-600 dark:hover:text-blue-300;
 	}
 }

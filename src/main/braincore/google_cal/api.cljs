@@ -37,6 +37,19 @@
              #js {:version "v3"
                   :auth auth}))
 
+(defn format-event
+  [event]
+  (let [{:keys [id summary start end conferenceData]} event]
+    {:id id
+     :summary summary
+     :start (new js/Date (get start :dateTime) )
+     :end   (new js/Date (get end :dateTime))
+     :meeting-type (get-in conferenceData [:conferenceSolution :name])
+     :meeting-url (->> conferenceData
+                       (:entryPoints)
+                       (first)
+                       (:uri))}))
+
 (defn fetch-events-list
   [{:keys [min max]}]
   (p/-> (-> calendar
@@ -46,10 +59,13 @@
                   :timeMin min
                   :timeMax max
                   :maxResults 10
-                  :singleEvents true}))
+                  :singleEvents true
+                  :orderBy :startTime}))
         (->clj)
         (get-in [:data :items])
+        (->> (map format-event))
         #_(pprint)))
+
 
 (defn fetch-event
   [{:keys [id]}]
@@ -60,8 +76,8 @@
               :eventId id
               :timeZone "America/New_York"})
         (->clj)
-        (get-in [:data])))
-
+        (get-in [:data])
+        (->> map format-event)))
 
 (comment
 
@@ -70,7 +86,7 @@
   (-> js/Date new .toISOString)
 ;; => "2022-02-20T03:49:16.831Z"
 
-  (p/-> (date/range (date/days (date/next-week :monday)))
+  (p/-> (date/range (date/days (date/next-week :tuesday)))
         (fetch-events-list)
         (pprint))
 

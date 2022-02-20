@@ -15,6 +15,7 @@
 		"@linear/sdk": "^1.22.0",
 		"@notionhq/client": "^0.4.13",
 		"@slack/web-api": "^6.6.0",
+		"@tailwindcss/forms": "^0.4.0",
 		"dotenv": "^16.0.0",
 		"googleapis": "^95.0.0",
 		"nbb": "^0.1.8",

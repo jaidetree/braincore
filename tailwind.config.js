@@ -3,7 +3,10 @@ module.exports = {
 	theme: {
 		extend: {
 			colors: {
+				"notion-light": "#ffffff",
 				"notion-dark": "#2F3437",
+				"notion-subtle-light": "#FBFAF9",
+				"notion-subtle-dark": "#3F4447",
 			},
 			screens: {
 				// "device-sm": { raw: "(min-device-width: 640px)" },
@@ -13,4 +16,5 @@ module.exports = {
 			},
 		},
 	},
+	plugins: [require("@tailwindcss/forms")],
 }

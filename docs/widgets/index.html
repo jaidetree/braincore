@@ -5,30 +5,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="stylesheet.css" />
-    <script src="https://unpkg.com/alpinejs"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-white dark:bg-notion-dark">
+<body class="notion">
     <div class="flex flex-col sm:flex-row gap-4 justify-end min-h-screen items-center">
-        <section x-data="{ open: false }" class="relative">
+        <section
+            x-data="{ open: '',
+                    date: new Date().toISOString().split('T').shift(),
+                    toggle () {
+                      this.open = this.open ? '' : 'dropdown'
+                    },
+                    hide () {
+                      this.open = ''
+                    },
+                    tomorrow () {
+                      const datetime = Date.now() + (1000 * 60 * 60 * 24)
+                      this.date = new Date(datetime).toISOString().split('T').shift()
+                    },
+                    }" class="relative">
             <form id="create-entry" name="create-entry" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto relative">
+                <input type="hidden" name="target_date" x-bind:value="date" />
                 <div class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto">
                     <button type="submit" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event_type" value="create-entry">
                         <span class="text-shadow">Create Entry</span>
                     </button>
-                    <button type="button" @click="open = !open" class="dropdown-btn">
+                    <button type="button" @click="toggle()" class="dropdown-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
                 </div>
-            </form>
-            <div x-show="open" x-cloak>
-                <div class="dropdown-overlay" @click="open = false" for="id-dropdown-create"></div>
-                <div class="dropdown dropdown-view">
-                    <button type="submit" class="dropdown-item" name="event_type" value="create-entry-tomorrow">For tomorrow</button>
-                    <button type="button" class="dropdown-item" name="event_type" value="create-entry-date" id="create-date">For date...</button>
+                <div x-show="open == 'dropdown'" x-cloak style="display: none;">
+                    <div class="dropdown-overlay" @click="hide()"></div>
+                    <div class="dropdown dropdown-view">
+                        <button type="submit" @click="tomorrow()" class="dropdown-item" name="event_type" value="create-entry-tomorrow">For tomorrow</button>
+                        <button type="button" @click="open = 'date-selector'" class="dropdown-item" name="event_type" value="create-entry-date">For date...</button>
+                    </div>
                 </div>
-            </div>
+                <div x-show="open == 'date-selector'" x-cloak style="display: none;">
+                    <div class="dropdown-overlay" @click="hide()"></div>
+                    <div class="dropdown dropdown-view w-80 p-4 flex flex-row items-stretch justify-between gap-4">
+                        <input type="date" x-bind:value="date" class="flex-auto" />
+                        <button type="submit" class="btn btn-primary px-4 py-0" @click="hide()" name="event_type" value="create-entry">Go</button>
+
+                    </div>
+                </div>
+            </form>
         </section>
 
         <form id="sync-linear" name="sync-linear" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto">
@@ -49,7 +71,7 @@
                     </button>
                 </div>
             </form>
-            <div x-show="open" x-cloak>
+            <div x-show="open" x-cloak style="display: none;">
                 <div class="dropdown-overlay" @click="open = false"></div>
                 <div class="dropdown dropdown-view">
                     <button type="submit" class="dropdown-item" name="event_type" value="slack-share-today">Only Today</button>
@@ -76,7 +98,6 @@
             console.log(e)
             const formData = new FormData(e.currentTarget)
             const btn = e.submitter
-            formData.append(e.submitter.name, e.submitter.value)
             const clientPayload = Array
                 .from(formData.entries())
                 .reduce((obj, [ key, value ]) => {
