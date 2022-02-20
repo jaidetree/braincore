@@ -1,12 +1,11 @@
 (ns braincore.notion.api
   (:require
-   [kitchen-async.promise :as p]
-   [cljs.pprint :refer [pprint]]))
+   [promesa.core :as p]))
 
 (def notion-api (js/require "@notionhq/client"))
 (def api-key js/process.env.NOTION_API_KEY)
 
-(def ^js/Object notion (new (.-Client notion-api) #js {:auth api-key}))
+(def notion (new (.-Client notion-api) #js {:auth api-key}))
 
 
 (defn fetch-page
@@ -29,7 +28,7 @@
                       (map #(if (true? (:has_children %))
                               (p/let [blocks (fetch-all-blocks {:block-id (:id %)})]
                                 (assoc % :children blocks))
-                              (p/resolve (assoc % :children []))))
+                              (p/resolved (assoc % :children []))))
                       (vec)))
           (js->clj :keywordize-keys true))))
 

@@ -10,12 +10,12 @@
   Dispatch commands based on the first arg provided
   "
   [cmd & args]
+
   (let [cmd-kw (keyword cmd)
         cmd-fn (case cmd-kw
                  :create-entry create-entry-cmd
                  :sync-tickets sync-tickets
-                 :share-summary share-summary
-                 :repl          println)]
+                 :share-summary share-summary)]
     (apply cmd-fn args)))
 
 

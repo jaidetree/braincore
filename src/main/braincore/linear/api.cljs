@@ -1,22 +1,27 @@
 (ns braincore.linear.api
   (:require
-   [kitchen-async.promise :as p]
+   [promesa.core :as p]
    [clojure.string :as s]
    [cljs.pprint :refer [pprint]]))
 
 (def api-key js/process.env.LINEAR_API_KEY)
 (def linear-sdk (js/require "@linear/sdk"))
-(def ^js/Object linear (new (.. linear-sdk -LinearClient) #js {:apiKey api-key}))
+(def linear (new (.. linear-sdk -LinearClient) #js {:apiKey api-key}))
 
 (def graphql-client (.-client linear))
 
 (defn gql-filter
+  "
+  Process more complex filter shapes in a JSON like format
+
+  Takes nested maps like {:state {:name {:eq \"To do\"}}}
+  Returns a string like {state: { name: { eq: \"To do\" } } }
+  "
   [filter-data]
   (let [json-str (js/JSON.stringify (clj->js filter-data))]
     (-> json-str
         (clojure.string/replace #"\\" "")
-        (clojure.string/replace #"\"([\w]+)\":" "$1: ")
-        #_(subs 1))))
+        (clojure.string/replace #"\"([\w]+)\":" "$1: "))))
 
 (comment
 
@@ -99,10 +104,8 @@
 
 (comment
 
-  (p/try
-    (p/-> (todo-issues) (pprint))
-    (p/catch js/Error error
-      (js/console.error error))))
+  (p/-> (todo-issues) (pprint)
+        (p/catch js/console.error)))
 
 (defn in-progress-issues
   []
@@ -172,4 +175,5 @@
         (get-in [:data :viewer :assignedIssues :nodes])))
 
 (comment
-  (p/-> (completed-issues) pprint))
+  (p/-> (completed-issues) pprint)
+  (+ 1 2))

@@ -2,8 +2,9 @@
   (:require
    [clojure.string :as s]
    [cljs.pprint :refer [pprint]]
-   [cljs.reader :refer [read-string]]
-   [kitchen-async.promise :as p]
+   [clojure.edn :refer [read-string]]
+   [promesa.core :as p]
+   [braincore.env :as env]
    [braincore.notion.blocks :as b]
    [braincore.notion.api :as notion]
    [braincore.formats :as date]
@@ -11,7 +12,7 @@
 
 (def fs (js/require "fs"))
 
-(def page-id js/process.env.NOTION_PAGE_ID)
+(def page-id (env/get :NOTION_PAGE_ID))
 (defonce entry-atom (atom {}))
 (defonce linear-atom (atom {}))
 
@@ -43,7 +44,7 @@
   "
   [f params error-msg & error-msg-args]
   (-> (f params)
-      (p/catch*
+      (p/catch
        (fn [err]
          (js/console.error err)
          (let [error-msg (str error-msg " " (s/join " " (map pprint-str error-msg-args)))]
