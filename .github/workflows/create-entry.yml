@@ -47,11 +47,11 @@ jobs:
           # Used to specify the path to a dependency file: package-lock.json, yarn.lock, etc. Supports wildcards or a list of file names for caching multiple dependencies.
           cache-dependency-path: yarn.lock
 
-      - name: Yarn install
+      - name: Install Dependencies
         run: yarn install --frozen-lockfile
 
       - name: Configure
-        run: 'echo "$GOOGLE_CAL_KEY" > googleauth.private.json'
+        run: 'echo "$GOOGLE_CAL_KEY" | base64 -d > googleauth.private.json'
         shell: bash
         env:
           GOOGLE_CAL_KEY: ${{ secrets.GOOGLE_CAL_KEY }}

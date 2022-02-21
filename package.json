@@ -9,7 +9,8 @@
 		"start": "nbb -cp src/main nrepl-server",
 		"braincore": "nbb -cp src/main -m braincore.cli/main",
 		"build:css": "yarn tailwindcss -i ./docs/widgets/tailwind.css -o ./docs/widgets/stylesheet.css",
-		"start:css": "yarn build:css --watch"
+		"start:css": "yarn build:css --watch",
+    "copy-key-file": "nbb ./scripts/format_key_file.cljs | base64 | pbcopy"
 	},
 	"dependencies": {
 		"@linear/sdk": "^1.22.0",
