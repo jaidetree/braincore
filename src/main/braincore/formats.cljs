@@ -19,6 +19,11 @@
                  :day :numeric
                  :year :numeric} date)))
 
+(defn time
+  [time-zone date]
+  (format-date {:timeStyle :short
+                :timeZone time-zone}
+               date))
 
 (defn date->map
   [date]
@@ -71,6 +76,26 @@
     :minutes (* n 1000 60)
     :seconds (* n 1000)))
 
+(defn start-of-day
+  [date]
+  (-> date
+      (date->map)
+      (assoc :hour   0
+             :minute 0
+             :second 0
+             :nano   0)
+      (iso)))
+
+(defn end-of-day
+  [date]
+  (-> date
+      (date->map)
+      (assoc :hour   23
+             :minute 59
+             :second 59
+             :nano   999)
+      (iso)))
+
 (defn range
   ([offset]
    (range offset offset))
@@ -78,20 +103,13 @@
    (let [now (js/Date.now)
          start-dt (new js/Date (+ now start))
          end-dt   (new js/Date (+ now end))]
-     {:min (-> start-dt
-               (date->map)
-               (assoc :hour  0
-                      :minute 0
-                      :second 0
-                      :nano   0)
-               (iso))
-      :max (-> end-dt
-               (date->map)
-               (assoc :hour   23
-                      :minute 59
-                      :second 59
-                      :nano   999)
-               (iso))})))
+     {:min (start-of-day start-dt)
+      :max (end-of-day end-dt)})))
+
+(defn day-of
+  [date]
+  {:min (start-of-day date)
+   :max (end-of-day   date)})
 
 (defn week
   []

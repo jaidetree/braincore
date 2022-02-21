@@ -8,7 +8,8 @@
    [braincore.notion.blocks :as b]
    [braincore.notion.api :as notion]
    [braincore.formats :as date]
-   [braincore.linear.api :as linear]))
+   [braincore.linear.api :as linear]
+   [braincore.google-cal.api :as gcal]))
 
 (def fs (js/require "fs"))
 
@@ -176,7 +177,7 @@
         incomplete-tasks (->> tasks
                               (:children)
                               ;; Drop the heading-2 and divider
-                              (drop 1)
+                              (drop 2)
                               (collect-incomplete-tasks))
         last-entry-date (get-in entry [:heading_1 :text 0 :text :content])]
 
@@ -243,10 +244,26 @@
          (when-empty completed "No completed tasks"))]
        (flatten)))
 
+(defn event-block
+  [{:keys [id summary start end url meeting-type meeting-url location]} time-zone]
+  (b/bullet
+   [(b/text {:href url} (str (date/time time-zone start)
+                             " - "
+                             (date/time time-zone end)
+                             " "
+                             summary))
+    (b/text " @ ")
+    (b/text {:href meeting-url} meeting-type)]))
+
+(defn event-blocks
+  [{:keys [time-zone items] :as events}]
+  (->> items
+       (map #(event-block % time-zone))))
+
 (defn create-columns
-  [{:keys [notion linear]}]
+  [{:keys [notion linear events]}]
   (let [incomplete-tasks (get notion :incomplete-tasks)
-        [tasks-title linear-title notes-title] (get notion :headers [])]
+        [tasks-title linear-title events-title notes-title] (get notion :headers [])]
     [(b/columns
       [(b/column (into [tasks-title
                         (b/divider)]
@@ -254,6 +271,9 @@
        (b/column (into [linear-title
                         (b/divider)]
                        (linear-blocks linear)))
+       (b/column (into [events-title
+                        (b/divider)]
+                       (event-blocks events)))
        (b/column [notes-title
                   (b/divider)
                   (b/bullet [(b/text "How was your day...")])])])]))
@@ -283,16 +303,19 @@
 
 (defn create-notion-entry
   [target-date]
-  (let [page-id js/process.env.NOTION_PAGE_ID]
-    (p/let [[notion-summary linear-summary]
+  (let [page-id js/process.env.NOTION_PAGE_ID
+        date-title (date/full-date target-date)]
+    (p/let [[notion-summary linear-summary events]
             (p/all [(p/-> page-id
                           (fetch-prev-entry)
-                          (parse-entry target-date))
-                    (fetch-linear-summary)])]
+                          (parse-entry date-title))
+                    (fetch-linear-summary)
+                    (gcal/fetch-events-list (date/day-of target-date))])]
 
       (-> {:notion notion-summary
            :linear linear-summary
-           :target-date target-date}
+           :events events
+           :target-date date-title}
           (build-notion-entry)
           (append-entry-to-page page-id)))))
 
@@ -310,14 +333,13 @@
   (-> (new js/Date (str date-str "T00:00"))
       (date/date->map)
       (date/iso)
-      (date/parse)
-      (date/full-date)))
+      (date/parse)))
 
 (defn create-entry-cmd
   [target-date & _args]
   (println "Creating journal entry in notion")
   (create-notion-entry
-   (cond (s/blank? target-date)    (date/full-date (new js/Date))
+   (cond (s/blank? target-date)    (new js/Date)
          (valid-date? target-date) (str->date target-date)
          :else
          (throw (new js/Error (str "Invalid date value provided. Received " target-date))))))

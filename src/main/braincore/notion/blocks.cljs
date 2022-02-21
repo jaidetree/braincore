@@ -61,10 +61,11 @@
    :paragraph {:text children}})
 
 (defn toggle
-  [title]
+  [title children]
   {:object :block
    :type :toggle
-   :toggle {:text [(text {} title)]}})
+   :toggle {:text title
+            :children children}})
 
 (defn divider
   []

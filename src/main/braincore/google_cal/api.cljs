@@ -39,16 +39,26 @@
 
 (defn format-event
   [event]
-  (let [{:keys [id summary start end conferenceData]} event]
+  (let [{:keys [id summary location start end conferenceData htmlLink]} event]
     {:id id
      :summary summary
+     :time-zone (get start :timeZone)
      :start (new js/Date (get start :dateTime) )
      :end   (new js/Date (get end :dateTime))
+     :url   htmlLink
+     :location location
      :meeting-type (get-in conferenceData [:conferenceSolution :name])
      :meeting-url (->> conferenceData
                        (:entryPoints)
                        (first)
                        (:uri))}))
+
+(defn format-events
+  [{:keys [timeZone items]}]
+  {:time-zone timeZone
+   :items (->> items
+               (sort-by #(get-in % [:start :dateTime]))
+               (map format-event))})
 
 (defn fetch-events-list
   [{:keys [min max]}]
@@ -62,8 +72,9 @@
                   :singleEvents true
                   :orderBy :startTime}))
         (->clj)
-        (get-in [:data :items])
-        (->> (map format-event))
+        (get-in [:data])
+        (format-events)
+        #_(->> (map format-event))
         #_(pprint)))
 
 
