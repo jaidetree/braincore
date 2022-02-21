@@ -129,7 +129,6 @@
 
 (defn valid-date?
   [date-str]
-  (println "date-str" date-str)
   (let [date (new js/Date date-str)]
     (not= (.toString date) "Invalid Date")))
 
