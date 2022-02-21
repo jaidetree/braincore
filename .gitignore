@@ -10,3 +10,4 @@
 /.log/
 .nrepl-port
 .cpcache
+/request.json

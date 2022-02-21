@@ -82,14 +82,39 @@
   This strips away the fields that are not typically needed
   "
   [block]
-  (dissoc block
-          :archived
-          :children
-          :created_time
-          :has_children
-          :id
-          :last_edited_time))
+  (let [block (dissoc block
+                      :archived
+                      :children
+                      :created_time
+                      :has_children
+                      :id
+                      :last_edited_time
+                      :last_edited_by
+                      :created_by)
+        type (get block :type)]
+    block
+    #_(cond (= type "toggle")
+          (assoc-in block [:toggle :rich_text] (get-in block [:toggle :text]))
 
+          :else
+          block)))
+
+(defn persist-block?
+  [block]
+  (let [type (get block :type)]
+    (cond
+      ;; Remove paragraphs with no text entries
+      (= type "paragraph")
+      (seq (get-in block [:paragraph :text]))
+
+      ;; Keep items like headings and dividers
+      (not= type "to_do")
+      true
+
+      ;; Drop completed to do items
+      (and (= type "to_do")
+           (not (get block :archived)))
+      (not (get-in block [:to_do :checked])))))
 
 (defn collect-incomplete-tasks
   "
@@ -106,9 +131,16 @@
   "
   [tasks-blocks]
   (->> tasks-blocks
-       (filter #(and (= (:type %) "to_do")
-                     (not (get % :archived))
-                     (not (get-in % [:to_do :checked]))))
+       (filter persist-block?)
+       ;; If block has children like a :toggle or collapsible heading
+       ;; parse them recursively
+       (map (fn [block]
+              (let [children (:children block)
+                    type (:type block)]
+                (if (seq children)
+                  (assoc-in block [(keyword type) :children]
+                            (collect-incomplete-tasks (:children block)))
+                  block))))
        (map clean-block)))
 
 (defn collect-headers
@@ -141,7 +173,11 @@
   [{:keys [page entry columns]} target-date]
   (let [[tasks _linear _notes] (:children columns)
         headers (collect-headers columns)
-        incomplete-tasks (collect-incomplete-tasks (:children tasks))
+        incomplete-tasks (->> tasks
+                              (:children)
+                              ;; Drop the heading-2 and divider
+                              (drop 1)
+                              (collect-incomplete-tasks))
         last-entry-date (get-in entry [:heading_1 :text 0 :text :content])]
 
     (when (or (not last-entry-date) (not (valid-date? last-entry-date)))
@@ -310,11 +346,9 @@
 
   (str->date "2022-02-22")
 
-  (-> @entry-atom
-      (parse-entry (str->date "2022-02-21")))
-
   (let [target-date (str->date "2022-02-22")
-        linear-data @linear-atom
+        #_#_linear-data @linear-atom
+        linear-data {}
         notion-data (parse-entry @entry-atom target-date)]
     (p/-> (build-notion-entry
            {:notion notion-data
@@ -327,5 +361,6 @@
                      (js/console.error error)))))
 
   (let [body (load-edn-file "debug.edn")]
-    (get-in body [:columns-blocks 0 :column_list :children 2 :column :children 2 :bulleted_list_item]))
+    (p/->> (get-in body [:columns-blocks 0 :column_list :children 0 :column :children 8])
+           (pprint)))
 )
