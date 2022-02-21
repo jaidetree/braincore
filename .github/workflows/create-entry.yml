@@ -6,8 +6,15 @@ on:
   #   pull_request:
   #     branches: [ master ]
   workflow_dispatch:
+    inputs:
+      target_date:
+          description: 'Target date in yyyy-mm-dd format'
+          required: false
+          type: string
+
   repository_dispatch:
     types: [create-entry]
+
   schedule:
     # EST is 5 hours behind UTC so this should trigger at 12 AM EST
     - cron: "0 5 * * *"
@@ -57,7 +64,7 @@ jobs:
           GOOGLE_CAL_KEY: ${{ secrets.GOOGLE_CAL_KEY }}
 
       - name: Create Journal Entry
-        run: yarn braincore create-entry
+        run: yarn braincore create-entry "${{ github.event.client_payload.target_date }}"
         env:
           GOOGLE_CAL_ID: ${{ secrets.GOOGLE_CAL_ID }}
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}

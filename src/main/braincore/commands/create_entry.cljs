@@ -127,21 +127,27 @@
        (map clean-block)
        #_(map #(get-in % [:heading_2 :text 0 :text :content]))))
 
+(defn valid-date?
+  [date-str]
+  (let [date (new js/Date date-str)]
+    (not= (.toString date) "Invalid Date")))
+
 (defn parse-entry
   "
-  Takes a map containing the page, entry, and columns blocks
+  Takes a map containing the page, entry, and columns blocks then the
+  target-date js/Date instance
   Returns an obj
   "
-  [{:keys [page entry columns]}]
+  [{:keys [page entry columns]} target-date]
   (let [[tasks _linear _notes] (:children columns)
         headers (collect-headers columns)
         incomplete-tasks (collect-incomplete-tasks (:children tasks))
         last-entry-date (get-in entry [:heading_1 :text 0 :text :content])]
 
-    (when (or (not last-entry-date) (= (.toString (new js/Date last-entry-date)) "Invalid Date"))
+    (when (or (not last-entry-date) (not (valid-date? last-entry-date)))
       (throw (new js/Error "Could not parse date")))
 
-    (when (= last-entry-date (date/full-date))
+    (when (= last-entry-date (date/full-date target-date))
       (throw (new js/Error (str "Entry for date " last-entry-date " already exists, skipping"))))
 
     {:page             page
@@ -237,12 +243,12 @@
              :columns-id (-> columns (first) (:id))})))
 
 (defn create-notion-entry
-  []
+  [target-date]
   (let [page-id js/process.env.NOTION_PAGE_ID]
     (p/let [[notion-summary linear-summary]
             (p/all [(p/-> page-id
                           (fetch-prev-entry)
-                          (parse-entry))
+                          (parse-entry target-date))
                     (fetch-linear-summary)])]
 
       (-> {:notion notion-summary
@@ -258,6 +264,15 @@
 (defn load-edn-file
   [filename]
   (read-string (.readFileSync fs filename #js {:encoding "utf-8"})))
+
+(defn create-entry-cmd
+  [target-date & _args]
+  (println "Creating journal entry in notion")
+  (create-notion-entry
+   (cond (s/blank? target-date) (new js/Date)
+         (valid-date? date)     (new js/Date date)
+         :else
+         (throw (new js/Error (str "Invalid date value provided. Received " target-date))))))
 
 (comment
 
@@ -276,7 +291,7 @@
   (pprint @entry-atom)
   (pprint @linear-atom)
 
-  (-> (parse-entry @entry-atom)
+  (-> (parse-entry @entry-atom (new js/Date))
       (pprint))
 
   (p/-> (fetch-linear-summary)
@@ -286,7 +301,7 @@
 
 
   (-> (build-notion-entry
-       {:notion (-> @entry-atom (parse-entry))
+       {:notion (-> @entry-atom (parse-entry js/Date))
         :linear @linear-atom})
       (save-edn-file "debug.edn"))
 
@@ -296,7 +311,7 @@
     nil)
 
   (p/-> (build-notion-entry
-         {:notion (-> @entry-atom (parse-entry))
+         {:notion (-> @entry-atom (parse-entry) (new js/Date))
           :linear @linear-atom})
         (save-edn-file "debug.edn")
         (append-entry-to-page page-id)
@@ -307,8 +322,3 @@
   (let [body (load-edn-file "debug.edn")]
     (get-in body [:columns-blocks 0 :column_list :children 2 :column :children 2 :bulleted_list_item]))
 )
-
-(defn create-entry-cmd
-  [& _args]
-  (println "Creating journal entry in notion")
-  (create-notion-entry))
