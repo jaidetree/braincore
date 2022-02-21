@@ -138,6 +138,10 @@
       (- (+ 7 target-day) day)
       (- target-day day))))
 
+(defn parse
+  [date-str]
+  (new js/Date date-str))
+
 (comment
   (day)
   (week)

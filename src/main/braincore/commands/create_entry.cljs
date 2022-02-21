@@ -129,6 +129,7 @@
 
 (defn valid-date?
   [date-str]
+  (println "date-str" date-str)
   (let [date (new js/Date date-str)]
     (not= (.toString date) "Invalid Date")))
 
@@ -147,6 +148,7 @@
     (when (or (not last-entry-date) (not (valid-date? last-entry-date)))
       (throw (new js/Error "Could not parse date")))
 
+    (println "last-entry-date" "=" last-entry-date "target-date " (date/full-date target-date))
     (when (= last-entry-date (date/full-date target-date))
       (throw (new js/Error (str "Entry for date " last-entry-date " already exists, skipping"))))
 
@@ -265,12 +267,19 @@
   [filename]
   (read-string (.readFileSync fs filename #js {:encoding "utf-8"})))
 
+(defn str->date
+  [date-str]
+  (-> (new js/Date (str date-str "T00:00"))
+      (date/date->map)
+      (date/iso)
+      (date/parse)))
+
 (defn create-entry-cmd
   [target-date & _args]
   (println "Creating journal entry in notion")
   (create-notion-entry
-   (cond (s/blank? target-date) (new js/Date)
-         (valid-date? date)     (new js/Date date)
+   (cond (s/blank? target-date)    (new js/Date)
+         (valid-date? target-date) (str->date target-date)
          :else
          (throw (new js/Error (str "Invalid date value provided. Received " target-date))))))
 
@@ -310,8 +319,17 @@
     (reset! linear-atom (load-edn-file "linear.edn"))
     nil)
 
+  (str->date "2022-02-21")
+
+  (-> @entry-atom
+      (parse-entry (str->date "2022-02-21")))
+
+  (let [datemap (date/date->map (new js/Date "2022-02-21T00:00"))]
+    (-> datemap
+        (date/iso)))
+
   (p/-> (build-notion-entry
-         {:notion (-> @entry-atom (parse-entry) (new js/Date))
+         {:notion (-> @entry-atom (parse-entry (new js/Date "2022-02-21T00:00")))
           :linear @linear-atom})
         (save-edn-file "debug.edn")
         (append-entry-to-page page-id)
