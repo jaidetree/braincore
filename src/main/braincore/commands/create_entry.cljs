@@ -135,7 +135,7 @@
 (defn parse-entry
   "
   Takes a map containing the page, entry, and columns blocks then the
-  target-date js/Date instance
+  target-date str in \"Monday, Feb 21, 2022\" format
   Returns an obj
   "
   [{:keys [page entry columns]} target-date]
@@ -147,8 +147,7 @@
     (when (or (not last-entry-date) (not (valid-date? last-entry-date)))
       (throw (new js/Error "Could not parse date")))
 
-    (println "last-entry-date" "=" last-entry-date "target-date " (date/full-date target-date))
-    (when (= last-entry-date (date/full-date target-date))
+    (when (= last-entry-date target-date)
       (throw (new js/Error (str "Entry for date " last-entry-date " already exists, skipping"))))
 
     {:page             page
@@ -156,6 +155,7 @@
      :columns          columns
      :headers          headers
      :incomplete-tasks incomplete-tasks
+     :target-date      target-date
      :last-entry-date  last-entry-date}))
 
 (defn fetch-linear-summary
@@ -177,9 +177,9 @@
   must be done separately as Notion's API does not let you create heading-1
   with columns in its children otherwise fails validation and returns errors.
   "
-  []
+  [{:keys [target-date] }]
   [(b/heading-1
-    (date/full-date)
+    target-date
     [(b/divider)])
    (b/divider)])
 
@@ -223,8 +223,8 @@
                   (b/bullet [(b/text "How was your day...")])])])]))
 
 (defn build-notion-entry
-  [{:keys [_notion _linear] :as data}]
-  {:section-blocks (create-section)
+  [{:keys [_notion _linear target-date] :as data}]
+  {:section-blocks (create-section data)
    :columns-blocks (create-columns data)})
 
 (defn append-entry-to-page
@@ -237,11 +237,13 @@
           columns (on-error notion/append-blocks
                             {:block-id section-id
                              :children columns-blocks}
-                            "Could not create columns in section" section-id section)]
+                            "Could not create columns in section" section-id section)
+          result {:section-id section-id
+                  :columns-id (-> columns (first) (:id))}]
 
     (println "Created sections and columns")
-    (pprint {:section-id section-id
-             :columns-id (-> columns (first) (:id))})))
+    result
+    ))
 
 (defn create-notion-entry
   [target-date]
@@ -253,7 +255,8 @@
                     (fetch-linear-summary)])]
 
       (-> {:notion notion-summary
-           :linear linear-summary}
+           :linear linear-summary
+           :target-date target-date}
           (build-notion-entry)
           (append-entry-to-page page-id)))))
 
@@ -271,13 +274,14 @@
   (-> (new js/Date (str date-str "T00:00"))
       (date/date->map)
       (date/iso)
-      (date/parse)))
+      (date/parse)
+      (date/full-date)))
 
 (defn create-entry-cmd
   [target-date & _args]
   (println "Creating journal entry in notion")
   (create-notion-entry
-   (cond (s/blank? target-date)    (new js/Date)
+   (cond (s/blank? target-date)    (date/full-date (new js/Date))
          (valid-date? target-date) (str->date target-date)
          :else
          (throw (new js/Error (str "Invalid date value provided. Received " target-date))))))
@@ -299,42 +303,28 @@
   (pprint @entry-atom)
   (pprint @linear-atom)
 
-  (-> (parse-entry @entry-atom (new js/Date))
-      (pprint))
-
-  (p/-> (fetch-linear-summary)
-        (get-in [:create :linear])
-        #_(linear-blocks)
-        (pprint))
-
-
-  (-> (build-notion-entry
-       {:notion (-> @entry-atom (parse-entry js/Date))
-        :linear @linear-atom})
-      (save-edn-file "debug.edn"))
-
   (do
     (reset! entry-atom (load-edn-file "blocks.edn"))
     (reset! linear-atom (load-edn-file "linear.edn"))
     nil)
 
-  (str->date "2022-02-21")
+  (str->date "2022-02-22")
 
   (-> @entry-atom
       (parse-entry (str->date "2022-02-21")))
 
-  (let [datemap (date/date->map (new js/Date "2022-02-21T00:00"))]
-    (-> datemap
-        (date/iso)))
-
-  (p/-> (build-notion-entry
-         {:notion (-> @entry-atom (parse-entry (new js/Date "2022-02-21T00:00")))
-          :linear @linear-atom})
-        (save-edn-file "debug.edn")
-        (append-entry-to-page page-id)
-        (save-edn-file "debug-out.edn")
-        (p/catch (fn [error]
-                   (js/console.error error))))
+  (let [target-date (str->date "2022-02-22")
+        linear-data @linear-atom
+        notion-data (parse-entry @entry-atom target-date)]
+    (p/-> (build-notion-entry
+           {:notion notion-data
+            :linear linear-data
+            :target-date target-date})
+          (save-edn-file "debug.edn")
+          (append-entry-to-page page-id)
+          (save-edn-file "debug-out.edn")
+          (p/catch (fn [error]
+                     (js/console.error error)))))
 
   (let [body (load-edn-file "debug.edn")]
     (get-in body [:columns-blocks 0 :column_list :children 2 :column :children 2 :bulleted_list_item]))
