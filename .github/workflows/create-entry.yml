@@ -41,7 +41,7 @@ jobs:
             ~/.cache
             ~/.m2/repository
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-shadow-${{ hashFiles('**/*.manifest') }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-pkg-${{ hashFiles('package.json') }}
           restore-keys: |
             ${{ runner.os }}-modules-
 
