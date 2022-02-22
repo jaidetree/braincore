@@ -59,6 +59,7 @@
   Returns a map containing the page map, entry map, and columns with children
   "
   [page-id]
+  (println "Fetching prev entry...")
   (p/let [page (on-error notion/fetch-page
                          {:page-id page-id}
                          "Could not fetch page" page-id)
@@ -94,11 +95,7 @@
                       :created_by)
         type (get block :type)]
     block
-    #_(cond (= type "toggle")
-          (assoc-in block [:toggle :rich_text] (get-in block [:toggle :text]))
-
-          :else
-          block)))
+    ))
 
 (defn block-canceled?
   [block]
@@ -219,6 +216,7 @@
 
 (defn fetch-linear-summary
   []
+  (println "Fetching linear summary...")
   (p/let [[in-progress in-review todos completed]
           (p/all [(linear/in-progress-issues)
                   (linear/in-review-issues)

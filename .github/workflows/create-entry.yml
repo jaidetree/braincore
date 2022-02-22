@@ -63,8 +63,8 @@ jobs:
           GOOGLE_CAL_KEY: ${{ secrets.GOOGLE_CAL_KEY }}
 
       - name: Create Journal Entry
-        # run: yarn braincore create-entry "${{ github.event.client_payload.target_date }}"
-        run: yarn braincore sync-cal
+        run: yarn braincore create-entry "${{ github.event.client_payload.target_date }}"
+        # run: yarn braincore sync-cal
         env:
           GOOGLE_CAL_ID: ${{ secrets.GOOGLE_CAL_ID }}
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
