@@ -7,9 +7,11 @@
    [braincore.env :as env]
    [braincore.notion.blocks :as b]
    [braincore.notion.api :as notion]
+   [braincore.notion.utils :as nu]
    [braincore.formats :as date]
    [braincore.linear.api :as linear]
-   [braincore.google-cal.api :as gcal]))
+   [braincore.google-cal.api :as gcal]
+   [braincore.utils :refer [on-error]]))
 
 (def fs (js/require "fs"))
 
@@ -20,8 +22,7 @@
 (defn last-entry
   [blocks]
   (->> blocks
-       (filter #(and (= (:type %) "heading_1")
-                     (true? (:has_children %))))
+       (filter nu/entry?)
        (last)))
 
 (defn entry-columns-block
@@ -29,27 +30,6 @@
   (->> blocks
        (filter #(= (:type %) "column_list"))
        (first)))
-
-(defn pprint-str
-  [arg]
-  (if (or (not arg) (empty? arg))
-    (str arg)
-    (with-out-str
-      (pprint arg))))
-
-(defn on-error
-  "
-  We don't want to swallow errors but we do want to get a better sense
-  for what request failed given we may hit the same notion api with
-  different args
-  "
-  [f params error-msg & error-msg-args]
-  (-> (f params)
-      (p/catch
-       (fn [err]
-         (js/console.error err)
-         (let [error-msg (str error-msg " " (s/join " " (map pprint-str error-msg-args)))]
-           (throw (new js/Error error-msg)))))))
 
 (defn fetch-prev-entry
   "
@@ -347,7 +327,7 @@
 
 (defn create-notion-entry
   [target-date]
-  (let [page-id js/process.env.NOTION_PAGE_ID
+  (let [page-id (env/get :NOTION_PAGE_ID)
         date-title (date/full-date target-date)]
     (p/let [[notion-summary linear-summary events]
             (p/all [(p/-> page-id

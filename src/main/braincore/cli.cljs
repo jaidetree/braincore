@@ -3,7 +3,7 @@
    ["dotenv/config"]
    [braincore.commands.create-entry :refer [create-entry-cmd]]
    [braincore.commands.sync-tickets :refer [sync-tickets]]
-   [braincore.commands.share-summary :refer [share-summary]]
+   [braincore.commands.share-summary :refer [share-summary-cmd]]
    [braincore.commands.sync-cal :refer [sync-cal-cmd]]))
 
 (defn main
@@ -16,7 +16,7 @@
         cmd-fn (case cmd-kw
                  :create-entry create-entry-cmd
                  :sync-tickets sync-tickets
-                 :share-summary share-summary
+                 :share-summary share-summary-cmd
                  :sync-cal      sync-cal-cmd )]
     (apply cmd-fn args)))
 

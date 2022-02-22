@@ -2,10 +2,11 @@
   (:require
    [cljs-bean.core :refer [->js]]
    [promesa.core :as p]
+   [braincore.env :as env]
    ["fs" :as fs]))
 
 (def notion-api (js/require "@notionhq/client"))
-(def api-key js/process.env.NOTION_API_KEY)
+(def api-key (env/get :NOTION_API_KEY))
 
 (def notion (new (.-Client notion-api) #js {:auth api-key}))
 

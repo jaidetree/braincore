@@ -1,4 +1,4 @@
-name: Create Journal Entry
+name: Share Slack Summary
 
 on:
   #   push:
@@ -8,16 +8,13 @@ on:
   workflow_dispatch:
     inputs:
       target_date:
-          description: 'Target date in yyyy-mm-dd format'
-          required: false
+          description: 'Format like yesterday, today, yesterday-today'
+          default: "yesterday-today"
+          required: true
           type: string
 
   repository_dispatch:
-    types: [create-entry]
-
-  schedule:
-    # EST is 5 hours behind UTC so this should trigger at 12 AM EST
-    - cron: "0 5 * * *"
+    types: [share-summary]
 
 jobs:
   build:
@@ -56,14 +53,8 @@ jobs:
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Configure
-        run: 'echo "$GOOGLE_CAL_KEY" | base64 -d > googleauth.private.json'
-        shell: bash
-        env:
-          GOOGLE_CAL_KEY: ${{ secrets.GOOGLE_CAL_KEY }}
-
-      - name: Create Journal Entry
-        run: yarn braincore create-entry "${{ github.event.client_payload.target_date }}"
+      - name: Share Slack Summary
+        run: yarn braincore create-entry "${{ github.event.client_payload.target_days }}"
         env:
           GOOGLE_CAL_ID: ${{ secrets.GOOGLE_CAL_ID }}
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}

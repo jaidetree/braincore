@@ -1,4 +1,4 @@
-{:lint-as {promesa.core/->   clojure.core/->
+{#_#_:lint-as {promesa.core/->   clojure.core/->
            promesa.core/->>  clojure.core/->>
            promesa.core/as-> clojure.core/as->
            promesa.core/let  clojure.core/let
