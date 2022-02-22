@@ -161,9 +161,6 @@
           slack-message (format-slack-message
                          [yesterday
                           today])]
-    (pprint {:yesterday yesterday
-             :today today
-             :slack-message slack-message})
     (send-to-slack slack-message)))
 
 (comment
@@ -172,14 +169,37 @@
 
   )
 
+(defn share-yesterday-summary
+  []
+  (p/let [{:keys [entries page]} (fetch-entries page-id)
+          yesterday (p/do!
+                             (->> entries
+                                  (take-last 2)
+                                  (first)
+                                  (map fetch-entry-blocks)))
+          slack-message (format-slack-message
+                         [yesterday])]
+    (send-to-slack slack-message)))
+
 (defn share-today-summary
-  [])
+  []
+  (p/let [{:keys [entries page]} (fetch-entries page-id)
+          today (p/do!
+                 (->> entries
+                      (last)
+                      (map fetch-entry-blocks)))
+          slack-message (format-slack-message
+                         [today])]
+    (send-to-slack slack-message)))
 
 (defn share-summary
   [format]
   (case format
-    :yesterday-today (share-yesterday-today-summary)))
+    :yesterday-today (share-yesterday-today-summary)
+    :yesterday       (share-yesterday-summary)
+    :today           (share-today-summary)
+    (throw (new js/Error (str "Could not share summary in format" format)))))
 
 (defn share-summary-cmd
-  [cmd & args]
-  (println args))
+  [format & _args]
+  (share-summary (keyword format)))
