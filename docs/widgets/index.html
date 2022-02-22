@@ -62,7 +62,7 @@
             <form id="slack-share" name="slack-share" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto">
                 <div class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto">
                     <input type="hidden" name="target_days" x-bind:value="targetDays" />
-                    <button type="submit" @click="targetDays = 'yesterday-tomorrow'" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event_type" value="share-summary">
+                    <button type="submit" @click="targetDays = 'yesterday-today'" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event_type" value="share-summary">
                         <span class="text-shadow">Share in Slack</span>
                     </button>
                     <button type="button" @click="open = !open" class="dropdown-btn">
