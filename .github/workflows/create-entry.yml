@@ -27,22 +27,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # - name: Get yarn cache directory path
-      #   id: yarn-cache-dir-path
-      #   run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      # - name: Cache deps
-      #   uses: actions/cache@v2
-      #   id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-      #   with:
-      #     path: |
-      #       node_modules
-      #       ~/.cache
-      #       ~/.m2/repository
-      #       ${{ steps.yarn-cache-dir-path.outputs.dir }}
-      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-pkg-${{ hashFiles('package.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-modules-
+      - name: Cache deps
+        uses: actions/cache@v2
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: |
+            node_modules
+            ~/.cache
+            ~/.m2/repository
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-pkg-${{ hashFiles('package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-
 
 
       - name: Setup Node.js environment
@@ -63,7 +63,8 @@ jobs:
           GOOGLE_CAL_KEY: ${{ secrets.GOOGLE_CAL_KEY }}
 
       - name: Create Journal Entry
-        run: yarn braincore create-entry "${{ github.event.client_payload.target_date }}"
+        # run: yarn braincore create-entry "${{ github.event.client_payload.target_date }}"
+        run: yarn braincore sync-cal
         env:
           GOOGLE_CAL_ID: ${{ secrets.GOOGLE_CAL_ID }}
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
