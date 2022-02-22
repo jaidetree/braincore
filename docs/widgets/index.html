@@ -58,10 +58,11 @@
                 <span class="text-shadow">Sync Linear</span>
             </button>
         </form>
-        <section x-data="{ open: false }" class="relative">
+        <section x-data="{ open: false, targetDays: 'yesterday-today' }" class="relative">
             <form id="slack-share" name="slack-share" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto">
                 <div class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto">
-                    <button type="submit" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event_type" value="slack-share">
+                    <input type="hidden" name="target_days" x-bind:value="targetDays" />
+                    <button type="submit" @click="targetDays = 'yesterday-tomorrow'" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event_type" value="share-summary">
                         <span class="text-shadow">Share in Slack</span>
                     </button>
                     <button type="button" @click="open = !open" class="dropdown-btn">
@@ -70,14 +71,14 @@
                         </svg>
                     </button>
                 </div>
-            </form>
-            <div x-show="open" x-cloak style="display: none;">
-                <div class="dropdown-overlay" @click="open = false"></div>
-                <div class="dropdown dropdown-view">
-                    <button type="submit" class="dropdown-item" name="event_type" value="slack-share-today">Only Today</button>
-                    <button type="submit" class="dropdown-item" name="event_type" value="slack-share-yesterday">Only Yesterday</button>
+                <div x-show="open" x-cloak style="display: none;">
+                    <div class="dropdown-overlay" @click="open = false"></div>
+                    <div class="dropdown dropdown-view">
+                        <button type="submit" @click="targetDays = 'today'; open = false;" class="dropdown-item" name="event_type" value="share-summary">Only Today</button>
+                        <button type="submit" @click="targetDays = 'yesterday'; open = false;" class="dropdown-item" name="event_type" value="share-summary">Only Yesterday</button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </section>
     </div>
     <script type="module">
@@ -110,8 +111,10 @@
                 client_payload: clientPayload
             }
 
-            const res = await octokit
-                .request(`POST /repos/${owner}/${repo}/dispatches`, payload)
+            console.log(payload)
+
+            // const res = await octokit
+            //     .request(`POST /repos/${owner}/${repo}/dispatches`, payload)
         })
      })
 

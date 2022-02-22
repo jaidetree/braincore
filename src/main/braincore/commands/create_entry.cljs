@@ -100,6 +100,23 @@
           :else
           block)))
 
+(defn block-canceled?
+  [block]
+  (let [type (keyword (get block :type))
+        text-entries (get-in block [type :text])
+        struck (->> text-entries
+                      (filter #(get-in % [:annotations :strikethrough])))]
+    (= (count struck) (count text-entries))))
+
+(comment
+  (block-canceled?
+   (b/paragraph [(b/text {:strikethrough true} "all text")
+                 (b/text {:strikethrough true} "canceled")]))
+  (block-canceled?
+   (b/paragraph [(b/text {:strikethrough true} "some text")
+                 (b/text {} "canceled")]))
+  )
+
 (defn persist-block?
   [block]
   (let [type (get block :type)]
@@ -107,6 +124,11 @@
       ;; Remove paragraphs with no text entries
       (= type "paragraph")
       (seq (get-in block [:paragraph :text]))
+
+      ;; Remove blocks that are stricken through
+      ;; but only if all their text is stricken through
+      (block-canceled? block)
+      false
 
       ;; Keep items like headings and dividers
       (not= type "to_do")
@@ -244,16 +266,40 @@
          (when-empty completed "No completed tasks"))]
        (flatten)))
 
+
 (defn event-block
   [{:keys [id summary start end url meeting-type meeting-url location]} time-zone]
-  (b/bullet
-   [(b/text {:href url} (str (date/time time-zone start)
-                             " - "
-                             (date/time time-zone end)
-                             " "
-                             summary))
-    (b/text " @ ")
-    (b/text {:href meeting-url} meeting-type)]))
+  (b/toggle
+   (concat []
+           (if meeting-url
+             [(b/text {:href meeting-url} "☎")]
+             [(b/text {} "📵")])
+           [(b/text "\t")
+            (b/text
+             {:href url}
+             (str (date/time time-zone start)
+                  " - "
+                  (date/time time-zone end)
+                  " "
+                  summary))])
+   (concat []
+
+           (when meeting-type
+             [(b/bullet
+               [(b/text (str "Type: "
+                             (if meeting-type
+                               meeting-type
+                               "In-Person")))])])
+
+           (when meeting-url
+             [(b/bullet
+               [(b/text {:href meeting-url} meeting-url)])])
+
+           (when location
+             [(b/bullet
+               [(b/text (str "Location: " location))])])
+           )
+   ))
 
 (defn event-blocks
   [{:keys [time-zone items] :as events}]
@@ -279,7 +325,7 @@
                   (b/bullet [(b/text "How was your day...")])])])]))
 
 (defn build-notion-entry
-  [{:keys [_notion _linear target-date] :as data}]
+  [{:keys [_notion _linear _target-date] :as data}]
   {:section-blocks (create-section data)
    :columns-blocks (create-columns data)})
 

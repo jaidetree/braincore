@@ -5,8 +5,8 @@
    (text {} content))
   ([{:keys [bold italic strikethrough underline code color href]} content]
    {:type :text
-    :text (->> [(when href {:link {:url href}})]
-               (into {:content content}))
+    :text (merge {:content content}
+                 (when href {:link {:url href}}))
     :annotations {:bold (true? bold)
                   :italic (true? italic)
                   :strikethrough (true? strikethrough)

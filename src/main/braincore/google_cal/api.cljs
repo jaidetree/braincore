@@ -97,7 +97,15 @@
   (-> js/Date new .toISOString)
 ;; => "2022-02-20T03:49:16.831Z"
 
-  (p/-> (date/range (date/days (date/next-week :tuesday)))
+  (-> (js/Date.now)
+      (date/parse)
+      (date/day-of)
+      #_(date/start-of-day)
+      #_(date/range))
+
+  (p/-> (js/Date.now)
+        (date/parse)
+        (date/day-of)
         (fetch-events-list)
         (pprint))
 
