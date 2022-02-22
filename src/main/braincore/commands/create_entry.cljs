@@ -11,7 +11,7 @@
    [braincore.formats :as date]
    [braincore.linear.api :as linear]
    [braincore.google-cal.api :as gcal]
-   [braincore.utils :refer [on-error]]))
+   [braincore.utils :refer [on-error pprint-str]]))
 
 (def fs (js/require "fs"))
 

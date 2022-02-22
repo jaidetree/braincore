@@ -111,10 +111,8 @@
                 client_payload: clientPayload
             }
 
-            console.log(payload)
-
-            // const res = await octokit
-            //     .request(`POST /repos/${owner}/${repo}/dispatches`, payload)
+            const res = await octokit
+                .request(`POST /repos/${owner}/${repo}/dispatches`, payload)
         })
      })
 
