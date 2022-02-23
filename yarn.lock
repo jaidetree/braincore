@@ -1430,9 +1430,9 @@ nanoid@^3.2.0:
   integrity sha512-n6Vs/3KGyxPQd6uO0eH4Bv0ojGSUvuLlIHtC3Y0kEO23YRge8H9x1GCzLn28YX0H66pMkxuaeESFq4tKISKwdw==
 
 nbb@^0.1.8:
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/nbb/-/nbb-0.1.8.tgz#272a7d167ad78e72f63022f844b3c90a68c22334"
-  integrity sha512-VLJ30YcOaHBOZkLs6eRPXi4v8YYFt9d7AKKEXx+EW5k/bjEyPU4SUEDE/ZMIHSOnF2yFrjcdQvePEDYPed0kRA==
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/nbb/-/nbb-0.1.9.tgz#1a3ac1693aa3f488c858194a4b564e1c09501832"
+  integrity sha512-HwRDhmfMnnuLZdOUMH7V9NzNr9eDz0vvEADoAHX6DSf9K0Lo038ro38R3lZ+2u7TfDGPTpjxh24s7lIQoylvjQ==
 
 node-fetch@^2.6.1:
   version "2.6.7"
