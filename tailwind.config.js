@@ -4,9 +4,9 @@ module.exports = {
 		extend: {
 			colors: {
 				"notion-light": "#ffffff",
-				"notion-dark": "#2F3437",
+				"notion-dark": "#191919",
 				"notion-subtle-light": "#FBFAF9",
-				"notion-subtle-dark": "#3F4447",
+				"notion-subtle-dark": "#202020",
 			},
 			screens: {
 				// "device-sm": { raw: "(min-device-width: 640px)" },
