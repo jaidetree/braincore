@@ -11,13 +11,11 @@
    [braincore.formats :as date]
    [braincore.linear.api :as linear]
    [braincore.google-cal.api :as gcal]
-   [braincore.utils :refer [on-error pprint-str]]))
+   [braincore.utils :refer [on-error pprint-str with-redefs-async] :as u]
+   ["fs/promises" :as fs]))
 
-(def fs (js/require "fs"))
 
 (def page-id (env/get :NOTION_PAGE_ID))
-(defonce entry-atom (atom {}))
-(defonce linear-atom (atom {}))
 
 (defn last-entry
   [blocks]
@@ -207,6 +205,12 @@
      :todos     todos
      :completed completed}))
 
+(defn fetch-cal-events
+  [target-date]
+  (-> target-date
+      (date/day-of)
+      (gcal/fetch-events-list)))
+
 (defn create-section
   "
   Creates the parent notion section that is a collapsible heading-1 block
@@ -334,7 +338,7 @@
                           (fetch-prev-entry)
                           (parse-entry date-title))
                     (fetch-linear-summary)
-                    (gcal/fetch-events-list (date/day-of target-date))])]
+                    (fetch-cal-events target-date)])]
 
       (-> {:notion notion-summary
            :linear linear-summary
@@ -344,13 +348,16 @@
           (append-entry-to-page page-id)))))
 
 (defn save-edn-file
-  [content filename]
-  (.writeFileSync fs filename (pprint-str content))
+  [content filename & {:keys [append]}]
+  (.writeFile fs filename (pprint-str content)
+              #js {:flag (if append "a" "w")})
   content)
 
 (defn load-edn-file
   [filename]
-  (read-string (.readFileSync fs filename #js {:encoding "utf-8"})))
+  (p/-> (.readFile fs filename #js {:encoding "utf-8"})
+        (read-string )))
+
 
 (defn str->date
   [date-str]
@@ -368,44 +375,39 @@
          :else
          (throw (new js/Error (str "Invalid date value provided. Received " target-date))))))
 
+(defn save-mock
+  [f-sym filename & args]
+  (let [[name f] (u/sym-pair f-sym)]
+    (p/let [entry (apply f args)]
+      (save-edn-file entry filename)
+      (println "Saved mock for" name "as" filename))))
+
 (comment
 
-  (p/let [entry (fetch-prev-entry page-id)]
-    (save-edn-file entry "blocks.edn")
-    (reset! entry-atom entry)
-    (println "Fetched prev entry")
-    (pprint entry))
+  (save-mock 'fetch-prev-entry "entry.edn" page-id)
+  (save-mock 'fetch-linear-summary "linear.edn")
+  (save-mock 'fetch-cal-events "events.edn" (new js/Date))
 
-  (p/let [linear-summary (fetch-linear-summary)]
-    (save-edn-file linear-summary "linear.edn")
-    (reset! linear-atom linear-summary)
-    (println "Fetched linear summary")
-    (pprint linear-summary))
 
-  (pprint @entry-atom)
-  (pprint @linear-atom)
+  (p/-> (with-redefs-async
+          [fetch-prev-entry     (fn [] (load-edn-file "blocks.edn"))
+           fetch-linear-summary (fn [] (load-edn-file "linear.edn"))
+           fetch-cal-events     (fn [] (load-edn-file "events.edn"))
 
-  (do
-    (reset! entry-atom (load-edn-file "blocks.edn"))
-    (reset! linear-atom (load-edn-file "linear.edn"))
-    nil)
+           notion/append-blocks
+           (fn [data]
+             (let [id (str (random-uuid))
+                   data (assoc-in data [:children 0 :id] id)]
+               (p/do!
+                (save-edn-file data "debug.edn" :append true)
+                (:children data))))]
+          (save-edn-file "" "debug.edn")
+          (create-entry-cmd "2022-02-23"))
+        (p/catch js/console.error))
 
-  (str->date "2022-02-22")
+  )
 
-  (let [target-date (str->date "2022-02-22")
-        #_#_linear-data @linear-atom
-        linear-data {}
-        notion-data (parse-entry @entry-atom target-date)]
-    (p/-> (build-notion-entry
-           {:notion notion-data
-            :linear linear-data
-            :target-date target-date})
-          (save-edn-file "debug.edn")
-          (append-entry-to-page page-id)
-          (save-edn-file "debug-out.edn")
-          (p/catch (fn [error]
-                     (js/console.error error)))))
-
+(comment
   (let [body (load-edn-file "debug.edn")]
     (p/->> (get-in body [:columns-blocks 0 :column_list :children 0 :column :children 8])
            (pprint)))

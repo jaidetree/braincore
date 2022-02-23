@@ -52,6 +52,15 @@
          (f2 hour) \: (f2 minute) \: (f2 second) \. (f3 nano)
          \Z)))
 
+(defn today-str
+  []
+  (let [date-str (-> (new js/Date) (.toISOString))
+        [date _time] (s/split date-str #"T")]
+    date))
+
+(comment
+  (today-str))
+
 
 (defn today
   []
