@@ -154,8 +154,7 @@
        (:children)
        (map #(->> % :children first))
        (filter #(= (:type %) "heading_2"))
-       (map clean-block)
-       #_(map #(get-in % [:heading_2 :text 0 :text :content]))))
+       (map clean-block)))
 
 (defn valid-date?
   [date-str]

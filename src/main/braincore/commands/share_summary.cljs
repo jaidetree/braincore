@@ -130,15 +130,13 @@
 
 (defn format-slack-message
   [summaries]
-  {:text (->> summaries
-              (map slack-summary)
-              (summary->str))
-   :channel slack-channel-id
-   :blocks
-   (concat [{:type "context",
-             :elements [{:type "mrkdwn",
-                         :text "sent from :brain: https://github.com/eccentric-j/braincore"}]}
-            ])})
+  (let [summary (->> summaries
+                     (map slack-summary)
+                     (summary->str))]
+    {:text summary
+     :channel slack-channel-id
+     :mrkdwn true
+     :parse "full"}))
 
 (defn send-to-slack
   [message]
