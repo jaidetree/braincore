@@ -11,7 +11,7 @@
    [braincore.formats :as date]
    [braincore.linear.api :as linear]
    [braincore.google-cal.api :as gcal]
-   [braincore.utils :refer [on-error pprint-str with-redefs-async] :as u]
+   [braincore.utils :refer [on-error pprint-str] :as u]
    ["fs/promises" :as fs]))
 
 
@@ -356,7 +356,7 @@
 (defn load-edn-file
   [filename]
   (p/-> (.readFile fs filename #js {:encoding "utf-8"})
-        (read-string )))
+        (read-string)))
 
 
 (defn str->date
@@ -389,7 +389,7 @@
   (save-mock 'fetch-cal-events "events.edn" (new js/Date))
 
 
-  (p/-> (with-redefs-async
+  (p/-> (p/with-redefs
           [fetch-prev-entry     (fn [] (load-edn-file "blocks.edn"))
            fetch-linear-summary (fn [] (load-edn-file "linear.edn"))
            fetch-cal-events     (fn [] (load-edn-file "events.edn"))

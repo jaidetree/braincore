@@ -111,33 +111,31 @@
 
 (defn slack-summary
   [{:keys [title incompleted-tasks completed-tasks]}]
-  [{:type "section",
-    :text {:type "mrkdwn",
-           :text (str "*" title "*")}}
-   {:type "divider"}
-   {:type "section",
-    :text {:type "mrkdwn",
-           :text (str
-                  "```"
-                  (->> [incompleted-tasks
-                        completed-tasks]
-                       (mapcat #(map slack-summary-task %))
-                       (s/join "\n"))
-                  "```"
-                  )}}])
+  (str title "\n"
+       (->> (repeat 60 "-") (s/join ""))
+       "\n"
+       (->> [completed-tasks
+             incompleted-tasks]
+            (mapcat #(map slack-summary-task %))
+            (s/join "\n"))))
+
+(defn summary->str
+  [entries]
+  (str
+   "```\n"
+   (->> entries
+        (s/join "\n\n"))
+   "```\n"
+   ))
 
 (defn format-slack-message
   [summaries]
-  {:text "Task Summary"
+  {:text (->> summaries
+              (map slack-summary)
+              (summary->str))
    :channel slack-channel-id
    :blocks
-   (concat [{:type "section"
-             :text {:type "plain_text"
-                    :text "My standup:"
-                    :emoji true}}]
-           (->> summaries
-                (mapcat slack-summary))
-           [{:type "context",
+   (concat [{:type "context",
              :elements [{:type "mrkdwn",
                          :text "sent from :brain: https://github.com/eccentric-j/braincore"}]}
             ])})
@@ -203,3 +201,6 @@
 (defn share-summary-cmd
   [format & _args]
   (share-summary (keyword format)))
+
+(comment
+  (share-summary :yesterday-today))
