@@ -168,11 +168,10 @@
 (defn share-yesterday-summary
   []
   (p/let [{:keys [entries page]} (fetch-entries page-id)
-          yesterday (p/do!
-                             (->> entries
-                                  (take-last 2)
-                                  (first)
-                                  (map fetch-entry-blocks)))
+          yesterday (->> entries
+                         (take-last 2)
+                         (first)
+                         (fetch-entry-blocks))
           slack-message (format-slack-message
                          [yesterday])]
     (send-to-slack slack-message)))
@@ -180,10 +179,9 @@
 (defn share-today-summary
   []
   (p/let [{:keys [entries page]} (fetch-entries page-id)
-          today (p/do!
-                 (->> entries
-                      (last)
-                      (map fetch-entry-blocks)))
+          today (->> entries
+                     (last)
+                     (fetch-entry-blocks))
           slack-message (format-slack-message
                          [today])]
     (send-to-slack slack-message)))
@@ -201,4 +199,6 @@
   (share-summary (keyword format)))
 
 (comment
-  (share-summary :yesterday-today))
+  (share-summary :yesterday-today)
+
+  (share-summary :today))
