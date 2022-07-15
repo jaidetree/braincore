@@ -39,12 +39,14 @@
 
 (defn format-event
   [event]
-  (let [{:keys [id summary location start end conferenceData htmlLink]} event]
+  (let [{:keys [id summary location start end conferenceData htmlLink]} event
+        all-day (not (get start :dateTime))]
     {:id id
      :summary summary
      :time-zone (get start :timeZone)
-     :start (new js/Date (get start :dateTime) )
-     :end   (new js/Date (get end :dateTime))
+     :all-day all-day
+     :start (when-not all-day (new js/Date (get start :dateTime)))
+     :end   (when-not all-day (new js/Date (get end :dateTime)))
      :url   htmlLink
      :location location
      :meeting-type (get-in conferenceData [:conferenceSolution :name])

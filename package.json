@@ -6,7 +6,7 @@
 	"license": "MIT",
 	"private": true,
 	"scripts": {
-		"start": "nbb -cp src/main nrepl-server",
+		"repl": "nbb -cp src/main nrepl-server",
 		"braincore": "nbb -cp src/main -m braincore.cli/main",
 		"build:css": "yarn tailwindcss -i ./docs/widgets/tailwind.css -o ./docs/widgets/stylesheet.css",
 		"start:css": "yarn build:css --watch",

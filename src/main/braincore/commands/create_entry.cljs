@@ -178,7 +178,7 @@
         last-entry-date (get-in entry [:heading_1 :text 0 :text :content])]
 
     (when (or (not last-entry-date) (not (valid-date? last-entry-date)))
-      (throw (new js/Error "Could not parse date")))
+      (throw (new js/Error (str "Could not parse date" last-entry-date))))
 
     (when (= last-entry-date target-date)
       (throw (new js/Error (str "Entry for date " last-entry-date " already exists, skipping"))))
@@ -206,6 +206,7 @@
 
 (defn fetch-cal-events
   [target-date]
+  (println "Fetching calendar events...")
   (-> target-date
       (date/day-of)
       (gcal/fetch-events-list)))
@@ -249,7 +250,7 @@
 
 
 (defn event-block
-  [{:keys [id summary start end url meeting-type meeting-url location]} time-zone]
+  [{:keys [id all-day summary start end url meeting-type meeting-url location] :as event} time-zone]
   (b/toggle
    (concat []
            (if meeting-url
@@ -258,11 +259,15 @@
            [(b/text "\t")
             (b/text
              {:href url}
-             (str (date/time time-zone start)
-                  " - "
-                  (date/time time-zone end)
-                  " "
-                  summary))])
+             (str
+              (if all-day
+                "(all day)"
+                (str
+                 (date/time time-zone start)
+                 " - "
+                 (date/time time-zone end)))
+              " "
+              summary))])
    (concat []
 
            (when meeting-type
@@ -284,11 +289,13 @@
 
 (defn event-blocks
   [{:keys [time-zone items] :as events}]
+  (println "Formatting event blocks")
   (->> items
        (map #(event-block % time-zone))))
 
 (defn create-columns
   [{:keys [notion linear events]}]
+  (println "Building columns...")
   (let [incomplete-tasks (get notion :incomplete-tasks)
         [tasks-title linear-title events-title notes-title] (get notion :headers [])]
     [(b/columns
@@ -312,6 +319,7 @@
 
 (defn append-entry-to-page
   [{:keys [section-blocks columns-blocks]} page-id]
+  (println "Appending entry to page")
   (p/let [section (on-error notion/append-blocks
                             {:block-id page-id
                              :children section-blocks}
@@ -339,6 +347,7 @@
                     (fetch-linear-summary)
                     (fetch-cal-events target-date)])]
 
+      (println "Creating entry from" (:last-entry-date notion-summary) "to" date-title)
       (-> {:notion notion-summary
            :linear linear-summary
            :events events
@@ -386,6 +395,8 @@
   (save-mock 'fetch-prev-entry "entry.edn" page-id)
   (save-mock 'fetch-linear-summary "linear.edn")
   (save-mock 'fetch-cal-events "events.edn" (new js/Date))
+
+  (create-entry-cmd "")
 
 
   (p/-> (p/with-redefs
