@@ -12,7 +12,7 @@
 	</head>
 	<body class="notion">
 		<div
-			class="flex flex-col sm:flex-row gap-4 justify-end min-h-screen items-center"
+			class="flex flex-col min-[500px]:flex-row gap-4 justify-end min-h-screen items-stretch min-[500px]:items-center max-[500px]:w-[80%] max-[500px]:m-auto"
 		>
 			<section
 				x-data="{ open: '',
@@ -38,11 +38,11 @@
 					name="create-entry"
 					method="POST"
 					action=""
-					class="w-full sm:w-auto relative"
+					class="relative"
 				>
 					<input type="hidden" name="target_date" x-bind:value="date" />
 					<div
-						class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto"
+						class="btn p-0 flex flex-row items-stretch justify-between relative"
 					>
 						<button
 							type="submit"
@@ -119,11 +119,11 @@
 				name="sync-linear"
 				method="POST"
 				action="https://cgi.eccentric-j.com/dispatch/dispatch.clj"
-				class="w-full sm:w-auto"
+				class="relative"
 			>
 				<button
 					type="submit"
-					class="btn btn-primary"
+					class="min-h-full btn btn-primary w-full m-auto rounded-r-none border-none"
 					name="event_type"
 					value="sync-linear"
 				>
@@ -139,10 +139,10 @@
 					name="slack-share"
 					method="POST"
 					action="https://cgi.eccentric-j.com/dispatch/dispatch.clj"
-					class="w-full sm:w-auto"
+					class=""
 				>
 					<div
-						class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto"
+						class="btn p-0 flex flex-row items-stretch justify-between relative"
 					>
 						<input type="hidden" name="target_days" x-bind:value="targetDays" />
 						<button
