@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Braincore Buttons</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheet.css" />
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-</head>
-<body class="notion">
-    <div class="flex flex-col sm:flex-row gap-4 justify-end min-h-screen items-center">
-        <section
-            x-data="{ open: '',
+	<head>
+		<title>Braincore Buttons</title>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="stylesheet.css" />
+		<script
+			defer
+			src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+		></script>
+	</head>
+	<body class="notion">
+		<div
+			class="flex flex-col sm:flex-row gap-4 justify-end min-h-screen items-center"
+		>
+			<section
+				x-data="{ open: '',
                     date: new Date().toISOString().split('T').shift(),
                     toggle () {
                       this.open = this.open ? '' : 'dropdown'
@@ -18,105 +23,217 @@
                     hide () {
                       this.open = ''
                     },
+                    today () {
+                      this.date = new Date().toISOString().split('T').shift()
+                    },
                     tomorrow () {
                       const datetime = Date.now() + (1000 * 60 * 60 * 24)
                       this.date = new Date(datetime).toISOString().split('T').shift()
                     },
-                    }" class="relative">
-            <form id="create-entry" name="create-entry" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto relative">
-                <input type="hidden" name="target_date" x-bind:value="date" />
-                <div class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto">
-                    <button type="submit" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event_type" value="create-entry">
-                        <span class="text-shadow">Create Entry</span>
-                    </button>
-                    <button type="button" @click="toggle()" class="dropdown-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                </div>
-                <div x-show="open == 'dropdown'" x-cloak style="display: none;">
-                    <div class="dropdown-overlay" @click="hide()"></div>
-                    <div class="dropdown dropdown-view">
-                        <button type="submit" @click="tomorrow()" class="dropdown-item" name="event_type" value="create-entry-tomorrow">For tomorrow</button>
-                        <button type="button" @click="open = 'date-selector'" class="dropdown-item" name="event_type" value="create-entry-date">For date...</button>
-                    </div>
-                </div>
-                <div x-show="open == 'date-selector'" x-cloak style="display: none;">
-                    <div class="dropdown-overlay" @click="hide()"></div>
-                    <div class="dropdown dropdown-view w-80 p-4 flex flex-row items-stretch justify-between gap-4">
-                        <input type="date" x-bind:value="date" class="flex-auto" />
-                        <button type="submit" class="btn btn-primary px-4 py-0" @click="hide()" name="event_type" value="create-entry">Go</button>
+                    }"
+				class="relative"
+			>
+				<form
+					id="create-entry"
+					name="create-entry"
+					method="POST"
+					action=""
+					class="w-full sm:w-auto relative"
+				>
+					<input type="hidden" name="target_date" x-bind:value="date" />
+					<div
+						class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto"
+					>
+						<button
+							type="submit"
+							class="min-h-full btn btn-primary flex-auto rounded-r-none border-none"
+							name="event_type"
+							@click="today()"
+							value="create-entry"
+							x-bind:title="date"
+						>
+							<span class="text-shadow">Create Entry</span>
+						</button>
+						<button type="button" @click="toggle()" class="dropdown-btn">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-5 w-5 drop-shadow"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M19 9l-7 7-7-7"
+								/>
+							</svg>
+						</button>
+					</div>
+					<div x-show="open == 'dropdown'" x-cloak style="display: none">
+						<div class="dropdown-overlay" @click="hide()"></div>
+						<div class="dropdown dropdown-view">
+							<button
+								type="submit"
+								@click="tomorrow()"
+								class="dropdown-item"
+								name="event_type"
+								value="create-entry-tomorrow"
+							>
+								For tomorrow
+							</button>
+							<button
+								type="button"
+								@click="open = 'date-selector'"
+								class="dropdown-item"
+								name="event_type"
+								value="create-entry-date"
+							>
+								For date...
+							</button>
+						</div>
+					</div>
+					<div x-show="open == 'date-selector'" x-cloak style="display: none">
+						<div class="dropdown-overlay" @click="hide()"></div>
+						<div
+							class="dropdown dropdown-view w-80 p-4 flex flex-row items-stretch justify-between gap-4"
+						>
+							<input type="date" x-bind:value="date" class="flex-auto" />
+							<button
+								type="submit"
+								class="btn btn-primary px-4 py-0"
+								@click="hide()"
+								name="event_type"
+								value="create-entry"
+							>
+								Go
+							</button>
+						</div>
+					</div>
+				</form>
+			</section>
 
-                    </div>
-                </div>
-            </form>
-        </section>
+			<form
+				id="sync-linear"
+				name="sync-linear"
+				method="POST"
+				action="https://cgi.eccentric-j.com/dispatch/dispatch.clj"
+				class="w-full sm:w-auto"
+			>
+				<button
+					type="submit"
+					class="btn btn-primary"
+					name="event_type"
+					value="sync-linear"
+				>
+					<span class="text-shadow">Sync Linear</span>
+				</button>
+			</form>
+			<section
+				x-data="{ open: false, targetDays: 'yesterday-today' }"
+				class="relative"
+			>
+				<form
+					id="slack-share"
+					name="slack-share"
+					method="POST"
+					action="https://cgi.eccentric-j.com/dispatch/dispatch.clj"
+					class="w-full sm:w-auto"
+				>
+					<div
+						class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto"
+					>
+						<input type="hidden" name="target_days" x-bind:value="targetDays" />
+						<button
+							type="submit"
+							@click="targetDays = 'yesterday-today'"
+							class="min-h-full btn btn-primary flex-auto rounded-r-none border-none"
+							name="event_type"
+							value="share-summary"
+						>
+							<span class="text-shadow">Share in Slack</span>
+						</button>
+						<button type="button" @click="open = !open" class="dropdown-btn">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-5 w-5 drop-shadow"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M19 9l-7 7-7-7"
+								/>
+							</svg>
+						</button>
+					</div>
+					<div x-show="open" x-cloak style="display: none">
+						<div class="dropdown-overlay" @click="open = false"></div>
+						<div class="dropdown dropdown-view">
+							<button
+								type="submit"
+								@click="targetDays = 'today'; open = false;"
+								class="dropdown-item"
+								name="event_type"
+								value="share-summary"
+							>
+								Only Today
+							</button>
+							<button
+								type="submit"
+								@click="targetDays = 'yesterday'; open = false;"
+								class="dropdown-item"
+								name="event_type"
+								value="share-summary"
+							>
+								Only Yesterday
+							</button>
+						</div>
+					</div>
+				</form>
+			</section>
+		</div>
+		<script type="module" langauge="javascript">
+			import { Octokit } from "https://cdn.skypack.dev/@octokit/core"
 
-        <form id="sync-linear" name="sync-linear" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto">
-            <button type="submit" class="btn btn-primary" name="event_type" value="sync-linear">
-                <span class="text-shadow">Sync Linear</span>
-            </button>
-        </form>
-        <section x-data="{ open: false, targetDays: 'yesterday-today' }" class="relative">
-            <form id="slack-share" name="slack-share" method="POST" action="https://cgi.eccentric-j.com/dispatch/dispatch.clj" class="w-full sm:w-auto">
-                <div class="btn p-0 flex flex-row items-stretch justify-between relative w-full sm:w-auto">
-                    <input type="hidden" name="target_days" x-bind:value="targetDays" />
-                    <button type="submit" @click="targetDays = 'yesterday-today'" class="min-h-full btn btn-primary flex-auto rounded-r-none border-none" name="event_type" value="share-summary">
-                        <span class="text-shadow">Share in Slack</span>
-                    </button>
-                    <button type="button" @click="open = !open" class="dropdown-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                </div>
-                <div x-show="open" x-cloak style="display: none;">
-                    <div class="dropdown-overlay" @click="open = false"></div>
-                    <div class="dropdown dropdown-view">
-                        <button type="submit" @click="targetDays = 'today'; open = false;" class="dropdown-item" name="event_type" value="share-summary">Only Today</button>
-                        <button type="submit" @click="targetDays = 'yesterday'; open = false;" class="dropdown-item" name="event_type" value="share-summary">Only Yesterday</button>
-                    </div>
-                </div>
-            </form>
-        </section>
-    </div>
-    <script type="module">
-     import { Octokit } from "https://cdn.skypack.dev/@octokit/core";
+			const params = new URLSearchParams(window.location.search || "?")
+			const token = params.get("api_token")
+			const owner = params.get("owner")
+			const repo = params.get("repo")
 
-     const params = new URLSearchParams(window.location.search || '?')
-     const token = params.get('api_token')
-     const owner = params.get('owner')
-     const repo = params.get('repo')
+			const octokit = new Octokit({
+				auth: token,
+			})
 
-     const octokit = new Octokit({
-         auth: token,
-     })
+			Array.from(document.forms).forEach(form => {
+				form.addEventListener("submit", async e => {
+					e.preventDefault()
+					console.log(e)
+					const formData = new FormData(e.currentTarget)
+					const btn = e.submitter
+					const clientPayload = Array.from(formData.entries()).reduce(
+						(obj, [key, value]) => {
+							obj[key] = value
+							return obj
+						},
+						{},
+					)
 
-     Array.from(document.forms).forEach(form => {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault()
-            console.log(e)
-            const formData = new FormData(e.currentTarget)
-            const btn = e.submitter
-            const clientPayload = Array
-                .from(formData.entries())
-                .reduce((obj, [ key, value ]) => {
-                    obj[key] = value
-                    return obj
-                }, {})
+					const payload = {
+						event_type: btn.value,
+						client_payload: clientPayload,
+					}
 
-            const payload = {
-                event_type: btn.value,
-                client_payload: clientPayload
-            }
-
-            const res = await octokit
-                .request(`POST /repos/${owner}/${repo}/dispatches`, payload)
-        })
-     })
-
-
-    </script>
-</body>
+					const res = await octokit.request(
+						`POST /repos/${owner}/${repo}/dispatches`,
+						payload,
+					)
+				})
+			})
+		</script>
+	</body>
 </html>
